@@ -3,7 +3,7 @@ resource "azurerm_resource_group" "rg01" {
   location = "West Europe"
 
   tags = {
-    Creator = "tymur_nikolaiev@epam.com"
+    Creator = var.creator
   }
 }
 
@@ -15,7 +15,7 @@ resource "azurerm_storage_account" "st01" {
   account_replication_type = "LRS"
 
   tags = {
-    Creator = "tymur_nikolaiev@epam.com"
+    Creator = var.creator
   }
 }
 
@@ -26,7 +26,7 @@ resource "azurerm_virtual_network" "vnet01" {
   address_space       = ["10.10.0.0/16"]
 
   tags = {
-    Creator = "tymur_nikolaiev@epam.com"
+    Creator = var.creator
   }
 }
 

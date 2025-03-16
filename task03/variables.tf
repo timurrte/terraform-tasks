@@ -22,3 +22,8 @@ variable "subnet_back" {
   type        = string
   description = "Subnet for backend"
 }
+
+variable "creator" {
+  type        = string
+  description = "Creator of project"
+}
