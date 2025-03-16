@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "rg01" {
-  name     = "cmaz-a36a106e-mod3-rg"
+  name     = var.resource_group_name
   location = "West Europe"
 
   tags = {
@@ -8,7 +8,7 @@ resource "azurerm_resource_group" "rg01" {
 }
 
 resource "azurerm_storage_account" "st01" {
-  name                     = "cmaza36a106esa"
+  name                     = var.storage_account_name
   resource_group_name      = azurerm_resource_group.rg01.name
   location                 = azurerm_resource_group.rg01.location
   account_tier             = "Standard"
@@ -20,7 +20,7 @@ resource "azurerm_storage_account" "st01" {
 }
 
 resource "azurerm_virtual_network" "vnet01" {
-  name                = "cmaz-a36a106e-mod3-vnet"
+  name                = var.vnet_name
   resource_group_name = azurerm_resource_group.rg01.name
   location            = azurerm_resource_group.rg01.location
   address_space       = ["10.10.0.0/16"]
@@ -31,14 +31,14 @@ resource "azurerm_virtual_network" "vnet01" {
 }
 
 resource "azurerm_subnet" "subnet01" {
-  name                 = "frontend"
+  name                 = var.subnet_front
   resource_group_name  = azurerm_resource_group.rg01.name
   virtual_network_name = azurerm_virtual_network.vnet01.name
   address_prefixes     = ["10.10.1.0/24"]
 }
 
 resource "azurerm_subnet" "subnet02" {
-  name                 = "backend"
+  name                 = var.subnet_back
   resource_group_name  = azurerm_resource_group.rg01.name
   virtual_network_name = azurerm_virtual_network.vnet01.name
   address_prefixes     = ["10.10.2.0/24"]

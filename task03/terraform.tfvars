@@ -1,3 +1,5 @@
 resource_group_name  = "cmaz-a36a106e-mod3-rg"
 storage_account_name = "cmaza36a106esa"
 vnet_name            = "cmaz-a36a106e-mod3-vnet"
+subnet_front         = "frontend"
+subnet_back          = "backend"

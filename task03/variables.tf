@@ -12,3 +12,13 @@ variable "vnet_name" {
   type        = string
   description = "VNet name"
 }
+
+variable "subnet_front" {
+  type        = string
+  description = "Subnet for fronted"
+}
+
+variable "subnet_back" {
+  type        = string
+  description = "Subnet for backend"
+}
