@@ -65,7 +65,7 @@ variable "vm_password" {
 }
 
 variable "vm_admin_user" {
-  type = string
+  type        = string
   description = "VM admin user name"
 }
 
