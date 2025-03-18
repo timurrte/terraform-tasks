@@ -4,6 +4,6 @@ output "vm_public_ip" {
 }
 
 output "vm_fqdn" {
-  value       = azurerm_public_ip.publ01.domain_name_label
+  value       = azurerm_public_ip.publ01.fqdn
   description = "VM Fully qualified domain name"
 }
