@@ -97,11 +97,6 @@ resource "azurerm_network_interface_security_group_association" "nic_sg_assoc01"
   network_security_group_id = azurerm_network_security_group.nsg01.id
 }
 
-resource "tls_private_key" "ssh_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
 resource "azurerm_linux_virtual_machine" "vm01" {
   name                = var.vm_name
   resource_group_name = azurerm_resource_group.rg01.name
