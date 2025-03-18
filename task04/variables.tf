@@ -58,6 +58,12 @@ variable "vm_size" {
   description = "VM size"
 }
 
+variable "vm_password" {
+  type        = string
+  description = "VM password"
+  sensitive   = true
+}
+
 variable "vm_os" {
   type        = string
   description = "VM image name"

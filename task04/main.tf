@@ -103,6 +103,7 @@ resource "azurerm_linux_virtual_machine" "vm01" {
   location            = azurerm_resource_group.rg01.location
   size                = var.vm_size
   admin_username      = "adminuser"
+  admin_password      = var.vm_password
   network_interface_ids = [
     azurerm_network_interface.nic01.id,
   ]
