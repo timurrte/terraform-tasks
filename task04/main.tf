@@ -122,14 +122,14 @@ resource "azurerm_linux_virtual_machine" "vm01" {
 
   admin_ssh_key {
     username   = var.vm_admin_user
-    public_key = file("~/.ssh/id_rsa.pub")
+    public_key = "${file("/root/id_rsa.pub")}"
   }
 
   provisioner "remote-exec" {
     connection {
       type        = "ssh"
-      user        = "adminuser"
-      private_key = file("~/.ssh/id_rsa")
+      user        = var.vm_admin_user
+      private_key = "${file("/root/id_rsa")}"
       host        = azurerm_public_ip.publ01.ip_address
     }
 
