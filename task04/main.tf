@@ -97,6 +97,11 @@ resource "azurerm_network_interface_security_group_association" "nic_sg_assoc01"
   network_security_group_id = azurerm_network_security_group.nsg01.id
 }
 
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 resource "azurerm_linux_virtual_machine" "vm01" {
   name                = var.vm_name
   resource_group_name = azurerm_resource_group.rg01.name
@@ -122,14 +127,14 @@ resource "azurerm_linux_virtual_machine" "vm01" {
 
   admin_ssh_key {
     username   = var.vm_admin_user
-    public_key = "${file("/root/id_rsa.pub")}"
+    public_key = tls_private_key.ssh_key.private_key_openssh
   }
 
   provisioner "remote-exec" {
     connection {
       type        = "ssh"
       user        = var.vm_admin_user
-      private_key = "${file("/root/id_rsa")}"
+      private_key = tls_private_key.ssh_key.public_key_openssh
       host        = azurerm_public_ip.publ01.ip_address
     }
 
