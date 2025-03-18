@@ -125,17 +125,11 @@ resource "azurerm_linux_virtual_machine" "vm01" {
     version   = "latest"
   }
 
-  admin_ssh_key {
-    username   = var.vm_admin_user
-    public_key = tls_private_key.ssh_key.private_key_openssh
-  }
-
   provisioner "remote-exec" {
     connection {
-      type        = "ssh"
-      user        = var.vm_admin_user
-      private_key = tls_private_key.ssh_key.public_key_openssh
-      host        = azurerm_public_ip.publ01.ip_address
+      type = "ssh"
+      user = var.vm_admin_user
+      host = azurerm_public_ip.publ01.ip_address
     }
 
     inline = [
