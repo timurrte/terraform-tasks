@@ -121,7 +121,7 @@ resource "azurerm_linux_virtual_machine" "vm01" {
   }
 
   admin_ssh_key {
-    username   = "adminuser"
+    username   = var.vm_admin_user
     public_key = file("~/.ssh/id_rsa.pub")
   }
 

@@ -64,6 +64,11 @@ variable "vm_password" {
   sensitive   = true
 }
 
+variable "vm_admin_user" {
+  type = string
+  description = "VM admin user name"
+}
+
 variable "vm_os" {
   type        = string
   description = "VM image name"
