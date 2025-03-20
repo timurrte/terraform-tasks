@@ -4,7 +4,7 @@ resource "azurerm_service_plan" "sp" {
   location            = var.rg.location
   os_type             = "Windows"
   sku_name            = var.sku_type
-
+  worker_count        = var.instance_count
   tags = {
     Creator = var.creator
   }

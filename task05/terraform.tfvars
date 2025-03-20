@@ -1,29 +1,33 @@
 resource_groups = {
   rg1 = {
-    name     = "rg_name_1"
-    location = "rg_name_1"
+    name     = "cmaz-a36a106e-mod5-rg-01"
+    location = "eastus"
   }
   rg2 = {
-    name     = "rg_name_2"
-    location = "rg_name_2"
+    name     = "cmaz-a36a106e-mod5-rg-02"
+    location = "westus"
   }
   rg3 = {
-    name     = "rg_name_3"
-    location = "rg_name_3"
+    name     = "cmaz-a36a106e-mod5-rg-03"
+    location = "easteurope"
   }
 }
 
 service_plans = {
   sp1 = {
-    name     = "sp_name1"
-    location = "sp_location1"
-    rg_key   = "rg1"
+    name           = "cmaz-a36a106e-mod5-asp-01"
+    location       = "sp_location1"
+    rg_key         = "rg1"
+    instance_count = 2
+    sku_type       = "P0v3"
   }
 
   sp2 = {
-    name     = "sp_name2"
-    location = "sp_location2"
-    rg_key   = "rg2"
+    name           = "sp_name2"
+    location       = "sp_location2"
+    rg_key         = "rg2"
+    instance_count = 1
+    sku_type       = "P1v3"
   }
 }
 

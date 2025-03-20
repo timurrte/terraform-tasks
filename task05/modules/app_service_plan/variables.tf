@@ -12,6 +12,12 @@ variable "sku_type" {
   type        = string
   description = "SKU type"
 }
+
+variable "instance_count" {
+  type        = number
+  description = "Worker nodes count"
+}
+
 variable "creator" {
   type        = string
   description = "Creator tag value"
