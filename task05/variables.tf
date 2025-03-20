@@ -32,6 +32,15 @@ variable "app_services" {
   description = "App services"
 }
 
+variable "ip_rules" {
+  type = list(object({
+    name        = string
+    action      = string
+    ip_address  = string
+    service_tag = string
+    priority    = number
+  }))
+}
 variable "tm" {
   type = object({
     profile_name   = string

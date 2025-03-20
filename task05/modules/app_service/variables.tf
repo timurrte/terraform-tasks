@@ -18,7 +18,7 @@ variable "creator" {
   description = "Creator tag value"
 }
 variable "ip_rules" {
-  type = map(object({
+  type = list(object({
     name        = string
     action      = string
     ip_address  = string
