@@ -29,7 +29,7 @@ variable "app_services" {
     allowed_tag_rule_name = string
     allowed_tag           = string
   }))
-  description = "App services"
+  description = "App Services configuration"
 }
 
 variable "ip_rules" {
