@@ -40,7 +40,7 @@ variable "ip_rules" {
     service_tag = string
     priority    = number
   }))
-  description = "IP rules"
+  description = "IP restriction rules"
 }
 
 variable "tm" {
