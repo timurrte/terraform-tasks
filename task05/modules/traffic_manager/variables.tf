@@ -4,7 +4,7 @@ variable "profile_name" {
 }
 
 variable "rg" {
-  type        = map(any)
+  type        = string
   description = "Resource group"
 }
 
@@ -13,6 +13,10 @@ variable "app_services" {
   description = "App Services"
 }
 
+variable "routing_method" {
+  type        = string
+  description = "Routing method for Traffic Manager"
+}
 variable "creator" {
   type        = string
   description = "Creator"

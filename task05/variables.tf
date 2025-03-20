@@ -1,3 +1,8 @@
+variable "creator" {
+  type        = string
+  description = "Creator of resource"
+}
+
 variable "resource_groups" {
   type = map(object({
     name     = string
@@ -8,18 +13,29 @@ variable "resource_groups" {
 
 variable "service_plans" {
   type = map(object({
+    rg_key   = string
     name     = string
     sku_type = string
   }))
   description = "Map of Application Service Plans"
 }
 
-variables "app_services" {
+variable "app_services" {
   type = map(object({
+    sp_key                = string
     name                  = string
     ip_restr_rule_name    = string
     allowed_ip            = string
     allowed_tag_rule_name = string
     allowed_tag           = string
   }))
+  description = "App services"
+}
+
+variable "tm" {
+  type = object({
+    profile_name   = string
+    routing_method = string
+  })
+  description = "Traffic Manager config"
 }

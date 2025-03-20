@@ -5,7 +5,7 @@ resource "azurerm_service_plan" "sp" {
   os_type             = "Windows"
   sku_name            = var.sku_type
 
-  tags {
+  tags = {
     Creator = var.creator
   }
 }

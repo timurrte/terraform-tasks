@@ -1,9 +1,9 @@
-variable "app_name" {
-  type        = string
-  description = "Windows Web App name"
+output "id" {
+  value       = azurerm_resource_group.rg1.id
+  description = "Resource Group ID"
 }
 
-variable "rg" {
-  type        = map(any)
-  description = "Resource group"
+output "name" {
+  value       = azurerm_resource_group.rg1.name
+  description = "Resource Group name"
 }

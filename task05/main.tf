@@ -1,62 +1,42 @@
-module "resource_group_1" {
-  source = "./modules/resource_groups"
+module "rg" {
+  for_each = var.resource_groups
+  source   = "./modules/resource_group/"
 
-  resource_group = resource_groups["rg1"]
-  creator        = resource_groups["rg1"].creator
+  resource_group = each.value
+  creator        = var.creator
 }
 
-module "resource_group_2" {
-  source = "./modules/resource_groups"
-
-  resource_group = resource_groups["rg2"]
-  creator        = resource_groups["rg2"].creator
-}
-module "resource_group_3" {
-  source = "./modules/resource_groups"
-
-  resource_group = resource_groups["rg3"]
-  creator        = resource_groups["rg3"].creator
-}
-
-module "asp_1" {
+module "asp" {
+  for_each = var.service_plans
   source   = "./modules/app_service_plan/"
-  sp_name  = var.service_plans["sp1"].name
-  rg       = resource_groups["rg1"]
-  sku_type = var.service_plans["sp1"].sku_type
-  creator  = var.creator
-}
-module "asp_2" {
-  source   = "./modules/app_service_plan/"
-  sp_name  = var.service_plans["sp2"].name
-  rg       = resource_groups["rg2"]
-  sku_type = var.service_plans["sp2"].sku_type
+  sp_name  = each.value.name
+  rg       = module.rg[each.value.rg_key].name
+  sku_type = each.value.sku_type
   creator  = var.creator
 }
 
+module "app_service" {
+  for_each = var.app_services
+  source   = "./modules/app_service/"
 
-module "app_service_1" {
-  source = "./modules/app_service/"
+  app_name = each.value.name
+  rg       = module.rg[each.value.rg_key].name
+  sp_id    = module.asp[each.value.sp_key].sv_plan_id
 
-  app_name = var.app_services["sv1"].name
-  rg       = var.resource_groups["rg1"]
-  sp_id    = module.asp_1.sv_plan_id
+  ip_restriction_rule_name = each.value.ip_restr_rule_name
+  allowed_ip               = each.value.allowed_ip
 
-  ip_restriction_rule_name = var.app_services["sv1"].ip_restr_rule_name
-  allowed_ip               = var.app_services["sv1"].allowed_ip
-
-  allow_tag_rule_name = var.app_services["sv1"].allow_tag_rule_name
-  allowed_tag         = var.app_services["sv1"].allowed_tag
+  allow_tag_rule_name = each.value.allow_tag_rule_name
+  allowed_tag         = each.value.allowed_tag
+  creator             = var.creator
 }
-module "app_service_2" {
-  source = "./modules/app_service/"
 
-  app_name = var.app_services["sv2"].name
-  rg       = var.resource_groups["rg2"]
-  sp_id    = module.asp_2.sv_plan_id
+module "traffic_manager" {
+  source = "./modules/traffic_manager/"
 
-  ip_restriction_rule_name = var.app_services["sv2"].ip_restr_rule_name
-  allowed_ip               = var.app_services["sv2"].allowed_ip
-
-  allow_tag_rule_name = var.app_services["sv2"].allow_tag_rule_name
-  allowed_tag         = var.app_services["sv2"].allowed_tag
+  profile_name   = var.tm.profile_name
+  rg             = module.rg["rg3"].name
+  routing_method = var.tm.routing_method
+  app_services   = module.app_service
+  creator        = var.creator
 }

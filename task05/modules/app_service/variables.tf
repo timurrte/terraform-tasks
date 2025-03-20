@@ -28,6 +28,11 @@ variable "rg" {
   description = "Resource group"
 }
 
+variable "sp_id" {
+  type        = string
+  description = "Service Plan ID"
+}
+
 variable "creator" {
   type        = string
   description = "Creator tag value"
