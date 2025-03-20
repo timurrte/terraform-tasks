@@ -29,7 +29,7 @@ variable "app_services" {
     allowed_tag_rule_name = string
     allowed_tag           = string
   }))
-  description = "App Services configuration"
+  # description = "App Services configuration"
 }
 
 variable "ip_rules" {
@@ -40,7 +40,7 @@ variable "ip_rules" {
     service_tag = string
     priority    = number
   }))
-  description = "IP restriction rules"
+  # description = "IP restriction rules"
 }
 
 variable "tm" {
@@ -48,5 +48,5 @@ variable "tm" {
     profile_name   = string
     routing_method = string
   })
-  description = "Traffic Manager config"
+  # description = "Traffic Manager configuration"
 }
