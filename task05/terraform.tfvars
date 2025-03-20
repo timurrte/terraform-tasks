@@ -22,7 +22,7 @@ service_plans = {
   }
 
   sp2 = {
-    name           = "sp_name2"
+    name           = "cmaz-a36a106e-mod5-asp-02"
     rg_key         = "rg2"
     instance_count = 1
     sku_type       = "P1v3"
