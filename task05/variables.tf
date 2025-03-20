@@ -40,7 +40,9 @@ variable "ip_rules" {
     service_tag = string
     priority    = number
   }))
+  description = "IP rules"
 }
+
 variable "tm" {
   type = object({
     profile_name   = string
