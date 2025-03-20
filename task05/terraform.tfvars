@@ -16,7 +16,6 @@ resource_groups = {
 service_plans = {
   sp1 = {
     name           = "cmaz-a36a106e-mod5-asp-01"
-    location       = "sp_location1"
     rg_key         = "rg1"
     instance_count = 2
     sku_type       = "P0v3"
@@ -24,7 +23,6 @@ service_plans = {
 
   sp2 = {
     name           = "sp_name2"
-    location       = "sp_location2"
     rg_key         = "rg2"
     instance_count = 1
     sku_type       = "P1v3"
@@ -33,23 +31,30 @@ service_plans = {
 
 app_services = {
   sv1 = {
-    sp_key                = "sp1"
-    name                  = "sv_name"
-    ip_restr_rule_name    = "name"
-    allowed_ip            = "ip"
-    allowed_tag_rule_name = "name"
-    allowed_tag           = "AzureTrafficManager"
+    sp_key = "sp1"
+    name   = "cmaz-a36a106e-mod5-app-01"
   }
   sv2 = {
-    name                  = "sv_name"
-    ip_restr_rule_name    = "name"
-    allowed_ip            = "ip"
-    allowed_tag_rule_name = "name"
-    allowed_tag           = "AzureTrafficManager"
+    sp_key = "sp2"
+    name   = "cmaz-a36a106e-mod5-app-02"
   }
 }
 
+ip_rules = [
+  {
+    name       = "allow-ip"
+    action     = "Allow"
+    ip_address = "18.153.146.156"
+    priority   = 101
+  },
+  {
+    name        = "allow-tm"
+    action      = "Allow"
+    service_tag = "AzureTrafficManager"
+    priority    = 102
+}]
+
 tm = {
-  profile_name   = "name"
-  routing_method = "method"
+  profile_name   = "cmaz-a36a106e-mod5-traf"
+  routing_method = "Performance"
 }

@@ -23,6 +23,16 @@ resource "azurerm_windows_web_app" "example" {
       action   = "Deny"
       priority = 505
     }
+    dynamic "ip_restriction" {
+      for_each = var.ip_rules
+      content {
+        name        = ip_restriction.value["name"]
+        action      = ip_restriction.value["action"]
+        priority    = ip_restriction.value["priority"]
+        ip_address  = lookup(ip_restriction, "ip_address", null)
+        service_tag = lookup(ip_restriction, "service_tag", null)
+      }
+    }
   }
 
   tags = {

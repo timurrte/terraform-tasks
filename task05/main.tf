@@ -24,12 +24,9 @@ module "app_service" {
   rg       = module.rg[each.value.rg_key].name
   sp_id    = module.asp[each.value.sp_key].sv_plan_id
 
-  ip_restriction_rule_name = each.value.ip_restr_rule_name
-  allowed_ip               = each.value.allowed_ip
+  ip_rules = var.ip_rules
 
-  allow_tag_rule_name = each.value.allow_tag_rule_name
-  allowed_tag         = each.value.allowed_tag
-  creator             = var.creator
+  creator = var.creator
 }
 
 module "traffic_manager" {
