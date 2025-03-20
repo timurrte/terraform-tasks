@@ -48,5 +48,5 @@ variable "tm" {
     profile_name   = string
     routing_method = string
   })
-  # description = "Traffic Manager configuration"
+  description = "Traffic Manager Profile configuration"
 }
