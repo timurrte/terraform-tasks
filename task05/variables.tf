@@ -40,7 +40,7 @@ variable "ip_rules" {
     service_tag = string
     priority    = number
   }))
-  # description = "IP restriction rules"
+  description = "IP restriction rules"
 }
 
 variable "tm" {
@@ -48,5 +48,5 @@ variable "tm" {
     profile_name   = string
     routing_method = string
   })
-  description = "Traffic Manager Profile configuration"
+  description = "TM Profile name and routing method configuration"
 }
