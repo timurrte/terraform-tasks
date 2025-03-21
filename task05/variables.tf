@@ -20,20 +20,18 @@ variable "traf" {
 }
 variable "service_plans" {
   type = map(object({
-    rg_key   = string
-    name     = string
-    sku_type = string
+    rg_key         = string
+    name           = string
+    instance_count = number
+    sku_type       = string
   }))
   description = "Map of Application Service Plans"
 }
 variable "app_services" {
   type = map(object({
-    sp_key                = string
-    name                  = string
-    ip_restr_rule_name    = string
-    allowed_ip            = string
-    allowed_tag_rule_name = string
-    allowed_tag           = string
+    sp_key = string
+    rg_key = string
+    name   = string
   }))
   description = "App Services configuration"
 }

@@ -9,7 +9,7 @@ resource_groups = {
   }
   rg3 = {
     name     = "cmaz-a36a106e-mod5-rg-03"
-    location = "easteurope"
+    location = "westeurope"
   }
 }
 
@@ -32,24 +32,28 @@ service_plans = {
 app_services = {
   sv1 = {
     sp_key = "sp1"
+    rg_key = "rg1"
     name   = "cmaz-a36a106e-mod5-app-01"
   }
   sv2 = {
     sp_key = "sp2"
+    rg_key = "rg2"
     name   = "cmaz-a36a106e-mod5-app-02"
   }
 }
 
 ip_rules = [
   {
-    name       = "allow-ip"
-    action     = "Allow"
-    ip_address = "18.153.146.156"
-    priority   = 101
+    name        = "allow-ip"
+    action      = "Allow"
+    ip_address  = "18.153.146.156"
+    service_tag = null
+    priority    = 101
   },
   {
     name        = "allow-tm"
     action      = "Allow"
+    ip_address  = null
     service_tag = "AzureTrafficManager"
     priority    = 102
 }]
