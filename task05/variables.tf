@@ -48,5 +48,5 @@ variable "traffic_manager" {
     profile_name   = string
     routing_method = string
   })
-  description = "TM Profile name and routing method configuration"
+  description = "Configuration for Azure Traffic Manager, including the profile name and routing method."
 }
