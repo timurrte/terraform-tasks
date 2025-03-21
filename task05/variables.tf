@@ -40,7 +40,7 @@ variable "ip_rules" {
     service_tag = string
     priority    = number
   }))
-  description = "IP restriction rules"
+  #description = "IP restriction rules"
 }
 
 variable "traf" {
@@ -48,5 +48,5 @@ variable "traf" {
     profile_name   = string
     routing_method = string
   }))
-  description = "Configuration for Azure Traffic Manager"
+  #description = "Configuration for Azure Traffic Manager"
 }
