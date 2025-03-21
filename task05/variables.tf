@@ -1,6 +1,6 @@
 variable "creator" {
-  type = string
-  #description = "Creator of resource"
+  type        = string
+  description = "Creator of resource"
 }
 
 variable "resource_groups" {
@@ -8,7 +8,7 @@ variable "resource_groups" {
     name     = string
     location = string
   }))
-  #description = "Map of resource group objects"
+  description = "Map of resource group objects"
 }
 
 variable "traf" {
@@ -16,7 +16,7 @@ variable "traf" {
     profile_name   = string
     routing_method = string
   }))
-  #description = "Configuration for Azure Traffic Manager"
+  description = "Configuration for Azure Traffic Manager"
 }
 variable "service_plans" {
   type = map(object({
@@ -35,10 +35,11 @@ variable "app_services" {
     allowed_tag_rule_name = string
     allowed_tag           = string
   }))
-  #description = "App Services configuration"
+  description = "App Services configuration"
 }
 
 variable "ip_rules" {
+  description = "IP restriction rules"
   type = list(object({
     name        = string
     action      = string
@@ -46,6 +47,4 @@ variable "ip_rules" {
     service_tag = string
     priority    = number
   }))
-  #description = "IP restriction rules"
 }
-
