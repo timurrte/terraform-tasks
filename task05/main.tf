@@ -7,10 +7,13 @@ module "rg" {
 }
 
 module "asp" {
-  for_each       = var.service_plans
-  source         = "./modules/app_service_plan/"
-  sp_name        = each.value.name
-  rg             = module.rg[each.value.rg_key].name
+  for_each = var.service_plans
+  source   = "./modules/app_service_plan/"
+  sp_name  = each.value.name
+  rg = {
+    name     = module.rg[each.value.rg_key].name,
+    location = module.rg[each.value.rg_key].location
+  }
   sku_type       = each.value.sku_type
   instance_count = each.value.instance_count
   creator        = var.creator
@@ -21,8 +24,11 @@ module "app_service" {
   source   = "./modules/app_service/"
 
   app_name = each.value.name
-  rg       = module.rg[each.value.rg_key].name
-  sp_id    = module.asp[each.value.sp_key].sv_plan_id
+  rg = {
+    name     = module.rg[each.value.rg_key].name,
+    location = module.rg[each.value.rg_key].location
+  }
+  sp_id = module.asp[each.value.sp_key].sv_plan_id
 
   ip_rules = var.ip_rules
 
