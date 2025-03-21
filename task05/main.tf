@@ -32,9 +32,9 @@ module "app_service" {
 module "traffic_manager" {
   source = "./modules/traffic_manager/"
 
-  profile_name   = var.tm.profile_name
+  profile_name   = var.traffic_manager.profile_name
   rg             = module.rg["rg3"].name
-  routing_method = var.tm.routing_method
+  routing_method = var.traffic_manager.routing_method
   app_services   = module.app_service
   creator        = var.creator
 }

@@ -43,7 +43,7 @@ variable "ip_rules" {
   description = "IP restriction rules"
 }
 
-variable "tm" {
+variable "traffic_manager" {
   type = object({
     profile_name   = string
     routing_method = string
