@@ -32,6 +32,14 @@ variable "app_services" {
   description = "App Services configuration"
 }
 
+variable "traf" {
+  type = map(object({
+    profile_name   = string
+    routing_method = string
+  }))
+  description = "Configuration for Azure Traffic Manager, including the profile name and routing method."
+}
+
 variable "ip_rules" {
   type = list(object({
     name        = string
@@ -40,13 +48,5 @@ variable "ip_rules" {
     service_tag = string
     priority    = number
   }))
-  description = "IP restriction rules"
-}
-
-variable "traf" {
-  type = map(object({
-    profile_name   = string
-    routing_method = string
-  }))
-  description = "Configuration for Azure Traffic Manager, including the profile name and routing method."
+  # description = "IP restriction rules"
 }
