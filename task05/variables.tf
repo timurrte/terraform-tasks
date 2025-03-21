@@ -39,3 +39,14 @@ variable "traf" {
   }))
   description = "Configuration for Azure Traffic Manager"
 }
+
+variable "ip_rules" {
+  type = list(object({
+    name        = string
+    action      = string
+    ip_address  = string
+    service_tag = string
+    priority    = number
+  }))
+  # description = "IP restriction rules"
+}
