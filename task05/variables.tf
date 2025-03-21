@@ -1,5 +1,5 @@
 variable "creator" {
-  type        = string
+  type = string
   #description = "Creator of resource"
 }
 
