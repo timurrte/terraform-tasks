@@ -18,7 +18,14 @@ variable "traf" {
   }))
   #description = "Configuration for Azure Traffic Manager"
 }
-
+variable "service_plans" {
+  type = map(object({
+    rg_key   = string
+    name     = string
+    sku_type = string
+  }))
+  description = "Map of Application Service Plans"
+}
 variable "app_services" {
   type = map(object({
     sp_key                = string
@@ -42,11 +49,3 @@ variable "ip_rules" {
   #description = "IP restriction rules"
 }
 
-variable "service_plans" {
-  type = map(object({
-    rg_key   = string
-    name     = string
-    sku_type = string
-  }))
-  description = "Map of Application Service Plans"
-}
