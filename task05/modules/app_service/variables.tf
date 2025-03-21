@@ -4,7 +4,10 @@ variable "app_name" {
 }
 
 variable "rg" {
-  type        = map(any)
+  type = object({
+    name     = string
+    location = string
+  })
   description = "Resource group"
 }
 

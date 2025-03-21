@@ -48,5 +48,5 @@ variable "service_plans" {
     name     = string
     sku_type = string
   }))
-  #description = "Map of Application Service Plans"
+  description = "Map of Application Service Plans"
 }

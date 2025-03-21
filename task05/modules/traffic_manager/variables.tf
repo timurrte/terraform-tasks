@@ -9,8 +9,11 @@ variable "rg" {
 }
 
 variable "app_services" {
-  type        = map(any)
-  description = "App Services"
+  type = object({
+    name = string
+    id   = string
+  })
+  description = "App Services config"
 }
 
 variable "routing_method" {
@@ -19,5 +22,5 @@ variable "routing_method" {
 }
 variable "creator" {
   type        = string
-  description = "Creator"
+  description = "Creator of resource"
 }
