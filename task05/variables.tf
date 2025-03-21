@@ -43,10 +43,10 @@ variable "ip_rules" {
   description = "IP restriction rules"
 }
 
-variable "traffic_manager" {
-  type = object({
+variable "traf" {
+  type = map(object({
     profile_name   = string
     routing_method = string
-  })
+  }))
   description = "Configuration for Azure Traffic Manager, including the profile name and routing method."
 }

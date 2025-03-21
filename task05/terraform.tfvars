@@ -54,9 +54,10 @@ ip_rules = [
     priority    = 102
 }]
 
-traffic_manager = {
-  profile_name   = "cmaz-a36a106e-mod5-traf"
-  routing_method = "Performance"
-}
+traf = {
+  traf_1 = {
+    profile_name   = "cmaz-a36a106e-mod5-traf"
+    routing_method = "Performance"
+} }
 
 creator = "tymur_nikolaiev@epam.com"
