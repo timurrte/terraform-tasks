@@ -11,13 +11,12 @@ variable "resource_groups" {
   description = "Map of resource group objects"
 }
 
-variable "service_plans" {
+variable "traf" {
   type = map(object({
-    rg_key   = string
-    name     = string
-    sku_type = string
+    profile_name   = string
+    routing_method = string
   }))
-  description = "Map of Application Service Plans"
+  description = "Configuration for Azure Traffic Manager"
 }
 
 variable "app_services" {
@@ -43,10 +42,11 @@ variable "ip_rules" {
   #description = "IP restriction rules"
 }
 
-variable "traf" {
+variable "service_plans" {
   type = map(object({
-    profile_name   = string
-    routing_method = string
+    rg_key   = string
+    name     = string
+    sku_type = string
   }))
-  #description = "Configuration for Azure Traffic Manager"
+  description = "Map of Application Service Plans"
 }
