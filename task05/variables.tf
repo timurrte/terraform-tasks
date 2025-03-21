@@ -39,7 +39,7 @@ variable "ip_rules" {
     service_tag = string
     priority    = number
   }))
-  #description = "IP restriction rules"
+  description = "IP restriction rules"
 }
 
 variable "service_plans" {
@@ -48,5 +48,5 @@ variable "service_plans" {
     name     = string
     sku_type = string
   }))
-  description = "Map of Application Service Plans"
+  #description = "Map of Application Service Plans"
 }
