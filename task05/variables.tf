@@ -43,6 +43,5 @@ variable "ip_rules" {
     action      = string
     ip_address  = string
     service_tag = string
-    priority    = number
   }))
 }

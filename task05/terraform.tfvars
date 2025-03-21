@@ -48,14 +48,12 @@ ip_rules = [
     action      = "Allow"
     ip_address  = "18.153.146.156/32"
     service_tag = null
-    priority    = 101
   },
   {
     name        = "allow-tm"
     action      = "Allow"
     ip_address  = null
     service_tag = "AzureTrafficManager"
-    priority    = 102
 }]
 
 traf = {
