@@ -9,10 +9,10 @@ variable "rg" {
 }
 
 variable "app_services" {
-  type = object({
+  type = map(object({
     name = string
     id   = string
-  })
+  }))
   description = "App Services config"
 }
 

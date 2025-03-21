@@ -36,6 +36,14 @@ module "traffic_manager" {
   profile_name   = each.value.profile_name
   rg             = module.rg["rg3"].name
   routing_method = each.value.routing_method
-  app_services   = module.app_service
-  creator        = var.creator
+  app_services = {
+    sv2 = {
+      name = module.app_service["sv1"].name,
+      id   = module.app_service["sv1"].id
+    },
+    sv1 = {
+      name = module.app_service["sv2"].name,
+      id   = module.app_service["sv2"].id
+  } }
+  creator = var.creator
 }

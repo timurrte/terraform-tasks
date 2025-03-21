@@ -1,4 +1,4 @@
-resource "azurerm_windows_web_app" "example" {
+resource "azurerm_windows_web_app" "app1" {
   name                = var.app_name
   resource_group_name = var.rg.name
   location            = var.rg.location
