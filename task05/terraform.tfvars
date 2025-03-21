@@ -46,7 +46,7 @@ ip_rules = [
   {
     name        = "allow-ip"
     action      = "Allow"
-    ip_address  = "18.153.146.156"
+    ip_address  = "18.153.146.156/32"
     service_tag = null
     priority    = 101
   },
