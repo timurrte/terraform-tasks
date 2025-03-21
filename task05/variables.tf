@@ -37,16 +37,5 @@ variable "traf" {
     profile_name   = string
     routing_method = string
   }))
-  description = "Configuration for Azure Traffic Manager, including the profile name and routing method."
-}
-
-variable "ip_rules" {
-  type = list(object({
-    name        = string
-    action      = string
-    ip_address  = string
-    service_tag = string
-    priority    = number
-  }))
-  description = "IP restriction rules"
+  description = "Configuration for Azure Traffic Manager"
 }
