@@ -14,6 +14,8 @@ variable "rg" {
 variable "kv" {
   description = "Key Vault connection configuration for storing secrets"
   type = object({
+    name            = string
+    rg_name         = string
     username_secret = string
     password_secret = string
   })

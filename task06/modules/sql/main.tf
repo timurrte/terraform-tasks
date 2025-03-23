@@ -40,8 +40,8 @@ resource "azurerm_mssql_firewall_rule" "rule01" {
 resource "azurerm_mssql_firewall_rule" "rule02" {
   name             = "allow-azure"
   server_id        = azurerm_mssql_server.server.id
-  start_ip_address = "0.0"
-  end_ip_address   = "0.0"
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
 }
 
 resource "azurerm_mssql_database" "db" {

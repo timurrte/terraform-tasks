@@ -15,7 +15,7 @@ module "sql" {
     location = azurerm_resource_group.rg.location
   }
 
-  kv_id = azurerm_key_vault.kv.id
+  kv_id = data.azurerm_key_vault.kv.id
 
   kv = {
     username_secret = var.kv.username_secret
@@ -42,7 +42,7 @@ module "app" {
     name     = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
   }
-
+  sql_connection_string = module.sql.sql_connection_string
   app = {
     name           = local.app_name
     dotnet_version = var.app.dotnet_version
