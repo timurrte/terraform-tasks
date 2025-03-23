@@ -3,15 +3,21 @@ resource "azurerm_resource_group" "rg" {
   location = var.rg.location
 }
 
+data "azurerm_key_vault" "kv" {
+  name                = var.kv.name
+  resource_group_name = var.kv.rg_name
+}
+
 module "sql" {
   source = "./modules/sql/"
   rg = {
     name     = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
   }
+
+  kv_id = azurerm_key_vault.kv.id
+
   kv = {
-    name            = var.kv.name
-    tenant_id       = var.kv.tenant_id
     username_secret = var.kv.username_secret
     password_secret = var.kv.password_secret
   }
@@ -46,4 +52,6 @@ module "app" {
     name = local.asp_name
     sku  = var.asp.sku
   }
+
+  creator_name = var.creator
 }

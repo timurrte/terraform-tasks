@@ -4,21 +4,16 @@ resource "random_password" "password" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
-data "azurerm_key_vault" "kv" {
-  name                = var.kv.name
-  resource_group_name = var.rg.name
-}
-
 resource "azurerm_key_vault_secret" "password" {
   name         = var.kv.password_secret
   value        = random_password.password.result
-  key_vault_id = azurerm_key_vault.kv.id
+  key_vault_id = var.kv_id
 }
 
 resource "azurerm_key_vault_secret" "username" {
   name         = var.kv.username_secret
   value        = var.sql.admin_username
-  key_vault_id = azurerm_key_vault.kv.id
+  key_vault_id = var.kv_id
 }
 
 resource "azurerm_mssql_server" "server" {
@@ -35,14 +30,21 @@ resource "azurerm_mssql_server" "server" {
   }
 }
 
-resource "azurerm_mssql_firewall_rule" "example" {
+resource "azurerm_mssql_firewall_rule" "rule01" {
   name             = var.firewall.rule_name
   server_id        = azurerm_mssql_server.server.id
   start_ip_address = var.firewall.allowed_ip
   end_ip_address   = var.firewall.allowed_ip
 }
 
-resource "azurerm_mssql_database" "example" {
+resource "azurerm_mssql_firewall_rule" "rule02" {
+  name             = "allow-azure"
+  server_id        = azurerm_mssql_server.server.id
+  start_ip_address = "0.0"
+  end_ip_address   = "0.0"
+}
+
+resource "azurerm_mssql_database" "db" {
   name        = var.sql.db_name
   server_id   = azurerm_mssql_server.server.id
   max_size_gb = 1

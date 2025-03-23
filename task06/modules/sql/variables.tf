@@ -9,8 +9,6 @@ variable "rg" {
 variable "kv" {
   description = "Key Vault options"
   type = object({
-    name            = string
-    tenant_id       = string
     username_secret = string
     password_secret = string
   })
@@ -32,6 +30,11 @@ variable "firewall" {
     rule_name  = string
     allowed_ip = string
   })
+}
+
+variable "kv_id" {
+  description = "Key Vault ID for access to secrets"
+  type        = string
 }
 
 variable "creator_name" {
