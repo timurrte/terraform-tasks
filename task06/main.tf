@@ -1,6 +1,10 @@
 resource "azurerm_resource_group" "rg" {
   name     = local.rg_name
   location = var.rg.location
+
+  tags {
+    Creator = var.creator
+  }
 }
 
 data "azurerm_key_vault" "kv" {

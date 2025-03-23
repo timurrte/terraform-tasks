@@ -4,6 +4,10 @@ resource "azurerm_service_plan" "asp" {
   location            = var.rg.location
   os_type             = "Linux"
   sku_name            = var.asp.sku
+
+  tags = {
+    Creator = var.creator_name
+  }
 }
 
 resource "azurerm_linux_web_app" "app" {
