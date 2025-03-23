@@ -4,8 +4,8 @@ resource "azurerm_resource_group" "rg" {
 }
 
 data "azurerm_key_vault" "kv" {
-  name                = var.kv.name
-  resource_group_name = var.kv.rg_name
+  name                = local.kv_server_name
+  resource_group_name = local.kv_rg_name
 }
 
 module "sql" {
