@@ -29,7 +29,7 @@ module "sql" {
   }
   firewall = {
     rule_name  = var.firewall.rule_name
-    allowed_ip = var.firewall.allowed_ip
+    allowed_ip = var.allowed_ip_address
   }
 
   creator_name = var.creator

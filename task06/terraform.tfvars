@@ -14,10 +14,9 @@ sql = {
   sku_type = "S2"
 }
 
-firewall = {
-  rule_name  = "allow-verification-ip"
-  allowed_ip = "18.153.146.156"
-}
+firewall_rule_name = "allow-verification-ip"
+
+allowed_ip_address = "18.153.146.156"
 
 asp = {
   sku = "P0v3"

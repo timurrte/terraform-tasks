@@ -26,12 +26,14 @@ variable "sql" {
   })
 }
 
-variable "firewall" {
+variable "allowed_ip_address" {
+  description = "Allowed IP address for connections to SQL server"
+  type        = string
+}
+
+variable "firewall_rule_name" {
   description = "Database Firewall rule name and allowed ip"
-  type = object({
-    rule_name  = string
-    allowed_ip = string
-  })
+  type        = string
 }
 
 variable "asp" {
