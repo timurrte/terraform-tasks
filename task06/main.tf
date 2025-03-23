@@ -28,7 +28,7 @@ module "sql" {
     sku_type       = var.sql.sku_type
   }
   firewall = {
-    rule_name  = var.firewall.rule_name
+    rule_name  = var.firewall_rule_name
     allowed_ip = var.allowed_ip_address
   }
 
