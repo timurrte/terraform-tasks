@@ -1,0 +1,25 @@
+#!/bin/bash
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+dpkg -i packages-microsoft-prod.deb
+sudo apt-get install libfuse3-dev fuse3
+apt update && apt install -y blobfuse2
+
+mkdir -p /mnt/blobfuse
+
+cat <<EOF > /etc/blobfuse2.yml
+file_cache:
+    path: "/tmp/cache/"
+
+azstorage:
+  type: "block"
+  account-name: ${account_name}
+  container:  ${container_name}
+  mode: "sas"
+  sas: ${sas_token}"sp=racwdl&st=2025-02-02T19:27:07Z&se=2025-06-03T02:27:07Z&sv=2024-11-04&sr=c&sig=UtpLW0%2FN34QczAmTsQzu65%2FOzrUq9TvGipABHn%2BykL4%3D"
+EOF
+
+chmod 600 /etc/blobfuse2.yml
+
+blobfuse2 mount /mnt/blobfuse --config-file=/etc/blobfuse2.yml &
+
+echo "@reboot root blobfuse2 mount /mnt/blobfuse --config-file=/etc/blobfuse2.yml" >> /etc/crontab
