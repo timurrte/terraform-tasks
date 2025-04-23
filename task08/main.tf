@@ -34,6 +34,9 @@ module "redis" {
   sku                        = var.redis.sku
   sku_family                 = var.redis.sku_family
   common_tag                 = var.common_tag
+
+  depends_on = [module.kv]
+
 }
 
 module "acr" {
