@@ -19,7 +19,7 @@ module "kv" {
   sku        = var.kv_sku
   common_tag = var.common_tag
 
-  depends_on = [ azurerm_resource_group.rg ]
+  depends_on = [azurerm_resource_group.rg]
 }
 
 module "redis" {
@@ -53,7 +53,7 @@ module "acr" {
   git_pat    = var.git_pat
   common_tag = var.common_tag
 
-  depends_on = [ azurerm_resource_group.rg ]
+  depends_on = [azurerm_resource_group.rg]
 }
 
 module "aks" {
@@ -74,7 +74,7 @@ module "aks" {
   name_prefix = var.name_prefix
   common_tag  = var.common_tag
 
-  depends_on = [ azurerm_resource_group.rg ]
+  depends_on = [azurerm_resource_group.rg]
 }
 
 data "azurerm_container_registry" "acr_data" {
@@ -99,7 +99,7 @@ module "aci" {
   kv_id                  = module.kv.id
   common_tag             = var.common_tag
 
-  depends_on = [ azurerm_resource_group.rg ]
+  depends_on = [azurerm_resource_group.rg]
 }
 
 data "azurerm_key_vault_secret" "redis_host" {
@@ -121,7 +121,7 @@ resource "kubectl_manifest" "secret_provider" {
     tenant_id                  = var.tenant_id
   })
 
-  depends_on = [ module.aks ]
+  depends_on = [module.aks]
 }
 
 resource "kubectl_manifest" "deployment" {
@@ -139,7 +139,7 @@ resource "kubectl_manifest" "deployment" {
       value = "1"
     }
   }
-  depends_on = [ module.aks ]
+  depends_on = [module.aks]
 }
 
 resource "kubectl_manifest" "service" {
@@ -154,7 +154,7 @@ resource "kubectl_manifest" "service" {
     }
   }
 
-  depends_on = [ module.aks ]
+  depends_on = [module.aks]
 }
 
 data "kubernetes_service" "app" {
