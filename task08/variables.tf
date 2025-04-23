@@ -13,6 +13,11 @@ variable "git_pat" {
   type        = string
 }
 
+variable "kv_sku" {
+  description = "KV SKU type"
+  type = string
+}
+
 variable "tenant_id" {
   description = "Tenant ID"
   type        = string

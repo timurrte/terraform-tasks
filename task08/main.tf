@@ -16,6 +16,7 @@ module "kv" {
   }
   tenant_id  = var.tenant_id
   object_id  = var.object_id
+  sku = var.kv_sku
   common_tag = var.common_tag
 }
 
@@ -51,7 +52,7 @@ module "acr" {
 module "aks" {
   source = "./modules/aks"
   k8s = {
-    cluster_name      = var.k8s.cluster_name
+    cluster_name      = local.aks_name
     node_count        = var.k8s.node_count
     node_os_disk_type = var.k8s.node_os_disk_type
     node_pool_name    = var.k8s.node_pool_name
