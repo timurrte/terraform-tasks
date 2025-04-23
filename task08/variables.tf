@@ -31,7 +31,6 @@ variable "object_id" {
 variable "k8s" {
   description = "k8s cluster config"
   type = object({
-    cluster_name      = string
     node_count        = number
     node_os_disk_type = string
     node_pool_name    = string
