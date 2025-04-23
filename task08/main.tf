@@ -18,6 +18,8 @@ module "kv" {
   object_id  = var.object_id
   sku        = var.kv_sku
   common_tag = var.common_tag
+
+  depends_on = [ azurerm_resource_group.rg ]
 }
 
 module "redis" {
@@ -50,6 +52,8 @@ module "acr" {
   acr_sku    = var.acr_sku
   git_pat    = var.git_pat
   common_tag = var.common_tag
+
+  depends_on = [ azurerm_resource_group.rg ]
 }
 
 module "aks" {
@@ -69,6 +73,8 @@ module "aks" {
   }
   name_prefix = var.name_prefix
   common_tag  = var.common_tag
+
+  depends_on = [ azurerm_resource_group.rg ]
 }
 
 data "azurerm_container_registry" "acr_data" {
@@ -92,6 +98,8 @@ module "aci" {
   redis_pak_secret_name  = var.redis_pak_secret_name
   kv_id                  = module.kv.id
   common_tag             = var.common_tag
+
+  depends_on = [ azurerm_resource_group.rg ]
 }
 
 data "azurerm_key_vault_secret" "redis_host" {
@@ -112,6 +120,8 @@ resource "kubectl_manifest" "secret_provider" {
     redis_password_secret_name = var.redis_pak_secret_name
     tenant_id                  = var.tenant_id
   })
+
+  depends_on = [ module.aks ]
 }
 
 resource "kubectl_manifest" "deployment" {
@@ -129,6 +139,7 @@ resource "kubectl_manifest" "deployment" {
       value = "1"
     }
   }
+  depends_on = [ module.aks ]
 }
 
 resource "kubectl_manifest" "service" {
@@ -142,6 +153,8 @@ resource "kubectl_manifest" "service" {
       value_type = "regex"
     }
   }
+
+  depends_on = [ module.aks ]
 }
 
 data "kubernetes_service" "app" {
