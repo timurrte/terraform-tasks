@@ -74,7 +74,7 @@ module "aks" {
   name_prefix = var.name_prefix
   common_tag  = var.common_tag
 
-  depends_on = [azurerm_resource_group.rg]
+  depends_on = [module.kv]
 }
 
 data "azurerm_container_registry" "acr_data" {
@@ -99,7 +99,7 @@ module "aci" {
   kv_id                  = module.kv.id
   common_tag             = var.common_tag
 
-  depends_on = [azurerm_resource_group.rg]
+  depends_on = [module.acr]
 }
 
 data "azurerm_key_vault_secret" "redis_host" {
@@ -139,7 +139,6 @@ resource "kubectl_manifest" "deployment" {
       value = "1"
     }
   }
-  depends_on = [module.aks]
 }
 
 resource "kubectl_manifest" "service" {
@@ -153,8 +152,6 @@ resource "kubectl_manifest" "service" {
       value_type = "regex"
     }
   }
-
-  depends_on = [module.aks]
 }
 
 data "kubernetes_service" "app" {
