@@ -1,13 +1,14 @@
 resource "azurerm_kubernetes_cluster" "cluster" {
-  name                = var.k8s_cluster_name
+  name                = var.k8s.cluster_name
   location            = var.rg.location
   resource_group_name = var.rg.name
+  dns_prefix          = var.name_prefix
 
   default_node_pool {
-    name         = var.k8s_node_pool_name
-    node_count   = var.k8s_node_count
-    vm_size      = var.k8s_node_size
-    os_disk_type = var.k8s_node_os_disk_type
+    name         = var.k8s.node_pool_name
+    node_count   = var.k8s.node_count
+    vm_size      = var.k8s.node_size
+    os_disk_type = var.k8s.node_os_disk_type
   }
 
   network_profile {
@@ -28,7 +29,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
 }
 
 resource "azurerm_role_assignment" "acr_pull" {
-  principal_id         = azurerm_kubernetes_cluster.cluster.kubelet_identity.object_id
+  principal_id         = azurerm_kubernetes_cluster.cluster.kubelet_identity[0].object_id
   role_definition_name = "AcrPull"
   scope                = var.acr_id
 
@@ -42,7 +43,7 @@ resource "azurerm_key_vault_access_policy" "kv_access" {
   object_id = azurerm_kubernetes_cluster.cluster.identity[0].principal_id
 
   secret_permissions = [
-    "get", "list"
+    "Get", "List"
   ]
 
   depends_on = [azurerm_kubernetes_cluster.cluster]

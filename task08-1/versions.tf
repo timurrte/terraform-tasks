@@ -13,10 +13,10 @@ terraform {
 }
 
 provider "kubectl" {
-  host                   = module.aks.host
-  client_certificate     = module.aks.client_certificate
-  client_key             = module.aks.client_key
-  cluster_ca_certificate = module.aks.cluster_ca_certificate
+  host                   = module.aks.config.host
+  client_certificate     = module.aks.config.client_certificate
+  client_key             = module.aks.config.client_key
+  cluster_ca_certificate = module.aks.config.cluster_ca_certificate
   load_config_file       = false
 }
 

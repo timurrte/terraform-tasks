@@ -27,8 +27,8 @@ module "redis" {
   }
   redis_name                 = local.redis_name
   kv_id                      = module.kv.id
-  redis_hostname_secret_name = "redis_hostname"
-  redis_pak_secret_name      = "redis_primary_key"
+  redis_hostname_secret_name = var.redis_host_secret_name
+  redis_pak_secret_name      = var.redis_pak_secret_name
   capacity                   = var.redis.capacity
   sku                        = var.redis.sku
   sku_family                 = var.redis.sku_family
@@ -43,13 +43,32 @@ module "acr" {
     name     = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
   }
-  acr_sku    = "standard"
+  acr_sku    = var.acr_sku
   git_pat    = var.git_pat
   common_tag = var.common_tag
 }
 
+module "aks" {
+  source = "./modules/aks"
+  k8s = {
+    cluster_name      = var.k8s.cluster_name
+    node_count        = var.k8s.node_count
+    node_os_disk_type = var.k8s.node_os_disk_type
+    node_pool_name    = var.k8s.node_pool_name
+    node_size         = var.k8s.node_size
+  }
+  key_vault_id = module.kv.id
+  acr_id       = module.acr.id
+  rg = {
+    name     = azurerm_resource_group.rg.name
+    location = azurerm_resource_group.rg.location
+  }
+  name_prefix = var.name_prefix
+  common_tag  = var.common_tag
+}
+
 data "azurerm_container_registry" "acr_data" {
-  name                = module.acr.acr_name
+  name                = local.acr_name
   resource_group_name = azurerm_resource_group.rg.name
 }
 
@@ -62,30 +81,42 @@ module "aci" {
     name     = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
   }
-  acr_login_server = data.acr_data.login_server
-  image_name       = var.image_name
-  image_tag        = "latest"
-  kv_id            = module.kv.id
-  common_tag       = var.common_tag
+  acr_login_server       = module.acr.acr_login_server
+  image_name             = var.image_name
+  image_tag              = "latest"
+  redis_host_secret_name = var.redis_host_secret_name
+  redis_pak_secret_name  = var.redis_pak_secret_name
+  kv_id                  = module.kv.id
+  common_tag             = var.common_tag
+}
+
+data "azurerm_key_vault_secret" "redis_host" {
+  name         = var.redis_host_secret_name
+  key_vault_id = module.kv.id
+}
+
+data "azurerm_key_vault_secret" "redis_pwd" {
+  name         = var.redis_pak_secret_name
+  key_vault_id = module.kv.id
 }
 
 resource "kubectl_manifest" "secret_provider" {
-  yaml_body = file("${path.module}/k8s-manifests/secret-provider.yaml.tftpl", {
-    aks_kv_access_identity_id  = module.aks.aks_kv_access_identity_id
-    kv_name                    = local.kv_name
-    redis_url_secret_name      = module.redis.redis_hostname_secret_name
-    redis_password_secret_name = module.redis.redis_pak_secret_name
+  yaml_body = templatefile("${path.module}/k8s-manifests/secret-provider.yaml.tftpl", {
+    aks_kv_access_identity_id  = module.aks.kv_access_identity_id
+    kv_name                    = local.keyvault_name
+    redis_url_secret_name      = var.redis_host_secret_name
+    redis_password_secret_name = var.redis_pak_secret_name
     tenant_id                  = var.tenant_id
   })
 }
 
 resource "kubectl_manifest" "deployment" {
   yaml_body = templatefile("${path.module}/k8s-manifests/deployment.yaml.tftpl", {
-    acr_login_server = data.acr_data.login_server
+    acr_login_server = module.acr.acr_login_server
     app_image_name   = var.image_name
     image_tag        = "latest"
-    redis_url        = data.azurerm_key_vault_secret.redis_hostname.value
-    redis_pwd        = data.azurerm_key_vault_secret.redis_primary_key.value
+    redis_url        = data.azurerm_key_vault_secret.redis_host.value
+    redis_pwd        = data.azurerm_key_vault_secret.redis_pwd.value
   })
   ## Block for deployment manifest
   wait_for {

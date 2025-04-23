@@ -10,42 +10,28 @@ variable "acr_id" {
   type        = string
 }
 
-variable "k8s_cluster_name" {
-  description = "Kubernetes cluster name"
-  type        = string
-}
-
 variable "key_vault_id" {
   description = "Key Vault ID"
   type        = string
 }
 
-variable "k8s_node_os_disk_type" {
-  description = "AKS node os disk type"
-  type        = string
-}
-
-variable "k8s_cluster_name" {
-  description = "AKS cluster name"
-  type        = string
-}
-
-variable "k8s_node_count" {
-  description = "AKS node count"
-  type        = number
-}
-
-variable "k8s_node_pool_name" {
-  description = "AKS node pool name"
-  type        = string
-}
-
-variable "k8s_node_size" {
-  description = "AKS node size"
-  type        = string
+variable "k8s" {
+  description = "Kubernetes cluster config"
+  type = object({
+    cluster_name      = string
+    node_os_disk_type = string
+    node_count        = number
+    node_pool_name    = string
+    node_size         = string
+  })
 }
 
 variable "common_tag" {
   description = "Common tag"
+  type        = string
+}
+
+variable "name_prefix" {
+  description = "Name prefix"
   type        = string
 }

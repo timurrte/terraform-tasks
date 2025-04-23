@@ -45,3 +45,13 @@ variable "common_tag" {
   description = "Common tag"
   type        = string
 }
+
+variable "redis_host_secret_name" {
+  description = "Redis hostname secret name"
+  type        = string
+}
+
+variable "redis_pak_secret_name" {
+  description = "Redis PAK secret name"
+  type        = string
+}

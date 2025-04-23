@@ -1,10 +1,10 @@
 data "azurerm_key_vault_secret" "host" {
-  name         = "redis_hostname"
+  name         = var.redis_host_secret_name
   key_vault_id = var.kv_id
 }
 
 data "azurerm_key_vault_secret" "key" {
-  name         = "redis_primary_key"
+  name         = var.redis_pak_secret_name
   key_vault_id = var.kv_id
 }
 
@@ -30,8 +30,8 @@ resource "azurerm_container_group" "example" {
     }
 
     secure_environment_variables = {
-      REDIS_URL = azurerm_key_vault_secret.host
-      REDIS_PWD = azurerm_key_vault_secret.key
+      REDIS_URL = data.azurerm_key_vault_secret.host.value
+      REDIS_PWD = data.azurerm_key_vault_secret.key.value
     }
 
     ports {

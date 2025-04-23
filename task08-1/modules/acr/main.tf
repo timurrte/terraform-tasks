@@ -11,8 +11,8 @@ resource "azurerm_container_registry" "acr" {
 }
 
 resource "azurerm_container_registry_task" "acr_task" {
-  name                  = "acr-container-task"
-  container_registry_id = azurerm_container_registry.example.id
+  name                  = "app-task"
+  container_registry_id = azurerm_container_registry.acr.id
   platform {
     os = "Linux"
   }
