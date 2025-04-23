@@ -16,7 +16,7 @@ module "kv" {
   }
   tenant_id  = var.tenant_id
   object_id  = var.object_id
-  sku = var.kv_sku
+  sku        = var.kv_sku
   common_tag = var.common_tag
 }
 

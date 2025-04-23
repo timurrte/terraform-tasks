@@ -13,7 +13,7 @@ variable "rg" {
 
 variable "sku" {
   description = "KV SKU type"
-  type = string
+  type        = string
 }
 
 variable "tenant_id" {

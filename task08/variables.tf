@@ -15,7 +15,7 @@ variable "git_pat" {
 
 variable "kv_sku" {
   description = "KV SKU type"
-  type = string
+  type        = string
 }
 
 variable "tenant_id" {
