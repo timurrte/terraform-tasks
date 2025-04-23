@@ -1,11 +1,11 @@
-# resource "azurerm_resource_group" "rg" {
-#   name     = local.rg_name
-#   location = var.rg_location
+resource "azurerm_resource_group" "rg" {
+  name     = local.rg_name
+  location = var.rg_location
 
-#   tags = {
-#     Creator = var.common_tag
-#   }
-# }
+  tags = {
+    Creator = var.common_tag
+  }
+}
 
 module "kv" {
   source  = "./modules/keyvault"
