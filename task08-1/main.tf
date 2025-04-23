@@ -139,3 +139,12 @@ resource "kubectl_manifest" "service" {
     }
   }
 }
+
+data "kubernetes_service" "app" {
+  metadata {
+    name      = "redis-flask-app-service"
+    namespace = "default"
+  }
+
+  depends_on = [kubectl_manifest.service]
+}
