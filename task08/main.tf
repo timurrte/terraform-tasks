@@ -37,7 +37,7 @@ module "redis" {
   sku_family                 = var.redis.sku_family
   common_tag                 = var.common_tag
 
-  depends_on = [module.kv]
+  depends_on = [module.kv.azurerm_key_vault_access_policy.kv_policy]
 
 }
 
@@ -77,12 +77,12 @@ module "aks" {
   depends_on = [module.acr]
 }
 
-data "azurerm_container_registry" "acr_data" {
-  name                = local.acr_name
-  resource_group_name = azurerm_resource_group.rg.name
+# data "azurerm_container_registry" "acr_data" {
+#   name                = local.acr_name
+#   resource_group_name = azurerm_resource_group.rg.name
 
-  depends_on = [module.acr]
-}
+#   depends_on = [module.acr]
+# }
 
 module "aci" {
   source      = "./modules/aci"
