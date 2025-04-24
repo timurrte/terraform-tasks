@@ -106,14 +106,14 @@ data "azurerm_key_vault_secret" "redis_host" {
   name         = var.redis_host_secret_name
   key_vault_id = module.kv.id
 
-  depends_on = [ module.redis ]
+  depends_on = [module.redis]
 }
 
 data "azurerm_key_vault_secret" "redis_pwd" {
   name         = var.redis_pak_secret_name
   key_vault_id = module.kv.id
 
-  depends_on = [ module.redis ]
+  depends_on = [module.redis]
 }
 
 resource "kubectl_manifest" "secret_provider" {
