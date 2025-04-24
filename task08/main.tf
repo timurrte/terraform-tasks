@@ -74,12 +74,14 @@ module "aks" {
   name_prefix = var.name_prefix
   common_tag  = var.common_tag
 
-  depends_on = [module.kv]
+  depends_on = [module.akr]
 }
 
 data "azurerm_container_registry" "acr_data" {
   name                = local.acr_name
   resource_group_name = azurerm_resource_group.rg.name
+
+  depends_on = [module.acr]
 }
 
 module "aci" {
