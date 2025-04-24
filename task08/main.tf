@@ -74,7 +74,7 @@ module "aks" {
   name_prefix = var.name_prefix
   common_tag  = var.common_tag
 
-  depends_on = [module.akr]
+  depends_on = [module.acr]
 }
 
 data "azurerm_container_registry" "acr_data" {
