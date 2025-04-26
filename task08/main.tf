@@ -37,7 +37,7 @@ module "redis" {
   sku_family                 = var.redis.sku_family
   common_tag                 = var.common_tag
 
-  depends_on = [module.kv.azurerm_key_vault_access_policy.kv_policy]
+  depends_on = [module.kv]
 
 }
 
