@@ -36,7 +36,7 @@ module "redis" {
   sku_family                 = var.redis.sku_family
   common_tag                 = var.common_tag
 
-  depends_on = [module.kv]
+  depends_on = [module.kv.kv_policy]
 
 }
 
@@ -52,7 +52,7 @@ module "acr" {
   git_pat    = var.git_pat
   common_tag = var.common_tag
 
-  depends_on = [module.kv]
+  depends_on = [module.kv.kv_policy]
 }
 
 module "aks" {
@@ -73,7 +73,7 @@ module "aks" {
   name_prefix = var.name_prefix
   common_tag  = var.common_tag
 
-  depends_on = [module.acr, module.kv]
+  depends_on = [module.acr, module.kv.kv_policy]
 }
 
 
