@@ -77,12 +77,6 @@ module "aks" {
   depends_on = [module.acr]
 }
 
-# data "azurerm_container_registry" "acr_data" {
-#   name                = local.acr_name
-#   resource_group_name = azurerm_resource_group.rg.name
-
-#   depends_on = [module.acr]
-# }
 
 module "aci" {
   source      = "./modules/aci"
