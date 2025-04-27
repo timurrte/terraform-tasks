@@ -1,5 +1,5 @@
 tenant_id   = "b41b72d0-4e9f-4c26-8a69-f949f367c91d"
-object_id   = "ee073e97-d234-497d-a2e1-2d0090ba97b4"
+object_id   = "835da4ff-78ad-46f6-8bf0-313f7c80242c"
 rg_location = "westus"
 name_prefix = "cmtr-a36a106e-mod8"
 redis = {
