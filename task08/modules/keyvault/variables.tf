@@ -22,7 +22,7 @@ variable "tenant_id" {
 }
 
 variable "object_id" {
-  description = "Object ID"
+  description = "Service Principal Object ID"
   type        = string
 }
 

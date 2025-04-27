@@ -1,6 +1,6 @@
 tenant_id   = "b41b72d0-4e9f-4c26-8a69-f949f367c91d"
 object_id   = "ee073e97-d234-497d-a2e1-2d0090ba97b4"
-rg_location = "westeurope"
+rg_location = "westus"
 name_prefix = "cmtr-a36a106e-mod8"
 redis = {
   cluster_name = "cluster"

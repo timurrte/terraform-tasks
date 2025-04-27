@@ -19,7 +19,6 @@ module "kv" {
   sku        = var.kv_sku
   common_tag = var.common_tag
 
-  depends_on = [azurerm_resource_group.rg]
 }
 
 module "redis" {
@@ -53,7 +52,7 @@ module "acr" {
   git_pat    = var.git_pat
   common_tag = var.common_tag
 
-  depends_on = [azurerm_resource_group.rg]
+  depends_on = [module.kv]
 }
 
 module "aks" {
@@ -74,7 +73,7 @@ module "aks" {
   name_prefix = var.name_prefix
   common_tag  = var.common_tag
 
-  depends_on = [module.acr]
+  depends_on = [module.acr, module.kv]
 }
 
 
@@ -102,14 +101,14 @@ data "azurerm_key_vault_secret" "redis_host" {
   name         = var.redis_host_secret_name
   key_vault_id = module.kv.id
 
-  depends_on = [module.kv]
+  depends_on = [module.redis]
 }
 
 data "azurerm_key_vault_secret" "redis_pwd" {
   name         = var.redis_pak_secret_name
   key_vault_id = module.kv.id
 
-  depends_on = [module.kv]
+  depends_on = [module.redis]
 }
 
 resource "kubectl_manifest" "secret_provider" {
