@@ -28,6 +28,13 @@ variable "object_id" {
   type        = string
 }
 
+variable "sp" {
+  description = "Service Principal ID and secret"
+  type = object({
+    client_id     = string
+    client_secret = string
+  })
+}
 variable "k8s" {
   description = "k8s cluster config"
   type = object({

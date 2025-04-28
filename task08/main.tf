@@ -66,14 +66,18 @@ module "aks" {
   }
   key_vault_id = module.kv.id
   acr_id       = module.acr.id
+  sp = {
+    client_id     = var.sp.client_id
+    client_secret = var.sp.client_secret
+  }
   rg = {
     name     = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
   }
   name_prefix = var.name_prefix
   common_tag  = var.common_tag
-
-  depends_on = [module.acr, module.kv.kv_policy]
+  tenant_id   = var.tenant_id
+  depends_on  = [module.acr, module.kv.kv_policy]
 }
 
 
@@ -118,18 +122,20 @@ data "azurerm_key_vault_secret" "redis_pwd" {
 }
 
 resource "kubectl_manifest" "secret_provider" {
+  provider = kubectl.aks
   yaml_body = templatefile("${path.module}/k8s-manifests/secret-provider.yaml.tftpl", {
-    aks_kv_access_identity_id  = module.aks.kv_access_identity_id
+    aks_kv_access_identity_id  = var.sp.client_id
     kv_name                    = local.keyvault_name
     redis_url_secret_name      = var.redis_host_secret_name
     redis_password_secret_name = var.redis_pak_secret_name
     tenant_id                  = var.tenant_id
   })
 
-  depends_on = [module.aks, azurerm_role_assignment.aks_kv_secret_reader]
+  depends_on = [module.aks]
 }
 
 resource "kubectl_manifest" "deployment" {
+  provider = kubectl.aks
   yaml_body = templatefile("${path.module}/k8s-manifests/deployment.yaml.tftpl", {
     acr_login_server = module.acr.acr_login_server
     app_image_name   = var.image_name
@@ -146,10 +152,11 @@ resource "kubectl_manifest" "deployment" {
   }
 
 
-  depends_on = [module.aks, azurerm_role_assignment.aks_kv_secret_reader]
+  depends_on = [module.aks]
 }
 
 resource "kubectl_manifest" "service" {
+  provider  = kubectl.aks
   yaml_body = file("${path.module}/k8s-manifests/service.yaml")
 
   ## Block for service manifest
@@ -161,7 +168,7 @@ resource "kubectl_manifest" "service" {
     }
   }
 
-  depends_on = [module.aks, azurerm_role_assignment.aks_kv_secret_reader]
+  depends_on = [module.aks]
 }
 
 data "kubernetes_service" "app" {

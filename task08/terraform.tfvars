@@ -21,3 +21,7 @@ aci_sku                = "Standard"
 acr_sku                = "Standard"
 redis_host_secret_name = "redis-hostname"
 redis_pak_secret_name  = "redis-primary-key"
+sp = {
+  client_id     = "ee073e97-d234-497d-a2e1-2d0090ba97b4"
+  client_secret = "yj98Q~QQ3i-snCiiKpTG1wX5FQsy6cVFev8GEb4_"
+}

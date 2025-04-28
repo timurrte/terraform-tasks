@@ -5,6 +5,12 @@ variable "rg" {
     location = string
   })
 }
+
+variable "tenant_id" {
+
+  description = "Tenant ID"
+  type        = string
+}
 variable "acr_id" {
   description = "Azure Container Registry ID to pull container images from"
   type        = string
@@ -13,6 +19,14 @@ variable "acr_id" {
 variable "key_vault_id" {
   description = "Key Vault ID"
   type        = string
+}
+
+variable "sp" {
+  description = "Service Principal ID and secret"
+  type = object({
+    client_id     = string
+    client_secret = string
+  })
 }
 
 variable "k8s" {
