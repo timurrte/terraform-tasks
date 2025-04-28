@@ -73,9 +73,8 @@ module "aks" {
   name_prefix = var.name_prefix
   common_tag  = var.common_tag
 
-  depends_on = [module.acr, module.kv.kv_policy]
+  depends_on = [module.kv.kv_policy]
 }
-
 
 module "aci" {
   source      = "./modules/aci"
@@ -126,7 +125,7 @@ resource "kubectl_manifest" "secret_provider" {
     tenant_id                  = var.tenant_id
   })
 
-  depends_on = [module.aks, azurerm_role_assignment.aks_kv_secret_reader]
+  depends_on = [module.aks]
 }
 
 resource "kubectl_manifest" "deployment" {
@@ -146,7 +145,7 @@ resource "kubectl_manifest" "deployment" {
   }
 
 
-  depends_on = [module.aks, azurerm_role_assignment.aks_kv_secret_reader]
+  depends_on = [module.aks]
 }
 
 resource "kubectl_manifest" "service" {
@@ -161,7 +160,7 @@ resource "kubectl_manifest" "service" {
     }
   }
 
-  depends_on = [module.aks, azurerm_role_assignment.aks_kv_secret_reader]
+  depends_on = [module.aks]
 }
 
 data "kubernetes_service" "app" {

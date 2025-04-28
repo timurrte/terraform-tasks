@@ -21,6 +21,7 @@ provider "kubectl" {
   client_certificate     = base64decode(module.aks.config.client_certificate)
   client_key             = base64decode(module.aks.config.client_key)
   cluster_ca_certificate = base64decode(module.aks.config.cluster_ca_certificate)
+  apply_retry_count      = 2
   load_config_file       = false
 }
 

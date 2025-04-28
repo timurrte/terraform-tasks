@@ -29,18 +29,27 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 }
 
+# --- Права на ACR
 resource "azurerm_role_assignment" "aks_acr_pull" {
-  scope                = var.acr_id                                                  # ID твого ACR
-  role_definition_name = "AcrPull"                                                   # Роль яка дозволяє тільки pull
-  principal_id         = azurerm_kubernetes_cluster.cluster.identity[0].principal_id # Identity кластера
+  scope                = var.acr_id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_kubernetes_cluster.cluster.identity[0].principal_id # <-- БЕЗ [0]
+}
+
+# --- Права на читання KeyVault
+resource "azurerm_role_assignment" "aks_kv_secret_user" {
+  scope                = var.key_vault_id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_kubernetes_cluster.cluster.kubelet_identity[0].object_id # <-- БЕЗ [0]
 }
 
 resource "azurerm_role_assignment" "aks_kv_secret_reader" {
   scope                = var.key_vault_id
   role_definition_name = "Reader"
-  principal_id         = azurerm_kubernetes_cluster.cluster.identity[0].principal_id # Identity кластера
+  principal_id         = azurerm_kubernetes_cluster.cluster.kubelet_identity[0].object_id
 }
 
+# --- Access Policy у KeyVault
 resource "azurerm_key_vault_access_policy" "kv_access" {
   key_vault_id = var.key_vault_id
 
