@@ -100,7 +100,19 @@ module "aci" {
     admin_password = module.acr.admin_password
   }
 
-  depends_on = [module.acr]
+  depends_on = [data.azurerm_key_vault_secret.redis_pwd]
+}
+
+resource "azurerm_role_assignment" "aks_acr_pull" {
+  scope                = module.acr.id                # ID твого ACR
+  role_definition_name = "AcrPull"                    # Роль яка дозволяє тільки pull
+  principal_id         = module.aks.kubelet_object_id # Identity кластера
+  depends_on           = [module.aks]
+}
+resource "azurerm_role_assignment" "aks_kv_secret_reader" {
+  scope                = module.kv.id
+  principal_id         = module.aks.kubelet_object_id
+  role_definition_name = "Reader"
 }
 
 data "azurerm_key_vault_secret" "redis_host" {
@@ -144,6 +156,9 @@ resource "kubectl_manifest" "deployment" {
       value = "1"
     }
   }
+
+
+  depends_on = [module.aks]
 }
 
 resource "kubectl_manifest" "service" {
@@ -157,6 +172,8 @@ resource "kubectl_manifest" "service" {
       value_type = "regex"
     }
   }
+
+  depends_on = [module.aks]
 }
 
 data "kubernetes_service" "app" {
