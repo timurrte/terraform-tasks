@@ -17,8 +17,8 @@ resource "azurerm_container_registry_task" "acr_task" {
     os = "Linux"
   }
   docker_step {
-    dockerfile_path      = "Dockerfile"
-    context_path         = "https://gitlab.com/timurrte1/terraform-task#main:task08/application"
+    dockerfile_path      = "application/Dockerfile"
+    context_path         = "https://gitlab.com/timurrte1/terraform-task#main:task08"
     context_access_token = var.git_pat
     image_names          = [var.image_name]
   }
