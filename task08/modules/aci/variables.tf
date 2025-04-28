@@ -55,3 +55,12 @@ variable "redis_pak_secret_name" {
   description = "Redis PAK secret name"
   type        = string
 }
+
+variable "acr" {
+  description = "ACR credentials"
+  type = object({
+    login_server   = string
+    admin_username = string
+    admin_password = string
+  })
+}

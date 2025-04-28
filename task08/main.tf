@@ -94,6 +94,12 @@ module "aci" {
   kv_id                  = module.kv.id
   common_tag             = var.common_tag
 
+  acr = {
+    login_server   = module.acr.login_server
+    admin_username = module.acr.admin_username
+    admin_password = module.acr.admin_password
+  }
+
   depends_on = [module.acr]
 }
 

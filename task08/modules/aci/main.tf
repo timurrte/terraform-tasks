@@ -17,6 +17,12 @@ resource "azurerm_container_group" "example" {
   dns_name_label      = "${var.name_prefix}-aci"
   os_type             = "Linux"
 
+  image_registry_credential {
+    server   = var.acr.login_server
+    username = var.acr.admin_username
+    password = var.acr.admin_password
+  }
+
   container {
     name   = "app"
     image  = "${var.acr_login_server}/${var.image_name}:${var.image_tag}"

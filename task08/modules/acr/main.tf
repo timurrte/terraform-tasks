@@ -3,7 +3,7 @@ resource "azurerm_container_registry" "acr" {
   resource_group_name = var.rg.name
   location            = var.rg.location
   sku                 = var.acr_sku
-  admin_enabled       = false
+  admin_enabled       = true
 
   tags = {
     Creator = var.common_tag
@@ -17,8 +17,8 @@ resource "azurerm_container_registry_task" "acr_task" {
     os = "Linux"
   }
   docker_step {
-    dockerfile_path      = "application/Dockerfile"
-    context_path         = "https://gitlab.com/timurrte1/terraform-task#main:task08"
+    dockerfile_path      = "Dockerfile"
+    context_path         = "https://github.com/timurrte/terraform-tasks#main:task08/application"
     context_access_token = var.git_pat
     image_names          = [var.image_name]
   }
