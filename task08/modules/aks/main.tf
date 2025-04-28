@@ -29,12 +29,16 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 }
 
-resource "azurerm_role_assignment" "acr_pull" {
-  principal_id         = azurerm_kubernetes_cluster.cluster.kubelet_identity[0].object_id
-  role_definition_name = "AcrPull"
-  scope                = var.acr_id
+resource "azurerm_role_assignment" "aks_acr_pull" {
+  scope                = var.acr_id                                                  # ID твого ACR
+  role_definition_name = "AcrPull"                                                   # Роль яка дозволяє тільки pull
+  principal_id         = azurerm_kubernetes_cluster.cluster.identity[0].principal_id # Identity кластера
+}
 
-  depends_on = [azurerm_kubernetes_cluster.cluster]
+resource "azurerm_role_assignment" "aks_kv_secret_reader" {
+  scope                = var.key_vault_id
+  role_definition_name = "Reader"
+  principal_id         = azurerm_kubernetes_cluster.cluster.identity[0].principal_id # Identity кластера
 }
 
 resource "azurerm_key_vault_access_policy" "kv_access" {

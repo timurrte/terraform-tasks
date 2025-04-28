@@ -103,18 +103,6 @@ module "aci" {
   depends_on = [data.azurerm_key_vault_secret.redis_pwd]
 }
 
-resource "azurerm_role_assignment" "aks_acr_pull" {
-  scope                = module.acr.id                # ID твого ACR
-  role_definition_name = "AcrPull"                    # Роль яка дозволяє тільки pull
-  principal_id         = module.aks.kubelet_object_id # Identity кластера
-  depends_on           = [module.aks]
-}
-resource "azurerm_role_assignment" "aks_kv_secret_reader" {
-  scope                = module.kv.id
-  principal_id         = module.aks.kubelet_object_id
-  role_definition_name = "Reader"
-}
-
 data "azurerm_key_vault_secret" "redis_host" {
   name         = var.redis_host_secret_name
   key_vault_id = module.kv.id
@@ -138,7 +126,7 @@ resource "kubectl_manifest" "secret_provider" {
     tenant_id                  = var.tenant_id
   })
 
-  depends_on = [module.aks]
+  depends_on = [module.aks, azurerm_role_assignment.aks_kv_secret_reader]
 }
 
 resource "kubectl_manifest" "deployment" {
@@ -158,7 +146,7 @@ resource "kubectl_manifest" "deployment" {
   }
 
 
-  depends_on = [module.aks]
+  depends_on = [module.aks, azurerm_role_assignment.aks_kv_secret_reader]
 }
 
 resource "kubectl_manifest" "service" {
@@ -173,7 +161,7 @@ resource "kubectl_manifest" "service" {
     }
   }
 
-  depends_on = [module.aks]
+  depends_on = [module.aks, azurerm_role_assignment.aks_kv_secret_reader]
 }
 
 data "kubernetes_service" "app" {
