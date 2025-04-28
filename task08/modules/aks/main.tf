@@ -5,10 +5,11 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dns_prefix          = var.name_prefix
 
   default_node_pool {
-    name         = var.k8s.node_pool_name
-    node_count   = var.k8s.node_count
-    vm_size      = var.k8s.node_size
-    os_disk_type = var.k8s.node_os_disk_type
+    name            = var.k8s.node_pool_name
+    node_count      = var.k8s.node_count
+    vm_size         = var.k8s.node_size
+    os_disk_type    = var.k8s.node_os_disk_type
+    os_disk_size_gb = "30"
   }
 
   network_profile {
