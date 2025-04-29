@@ -28,7 +28,22 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   tags = {
     Creator = var.common_tag
   }
+
+  depends_on = [azurerm_user_assigned_identity.aks_identity]
 }
+
+resource "azurerm_role_assignment" "aks_acr_pull" {
+  principal_id         = azurerm_kubernetes_cluster.cluster.kubelet_identity[0].object_id
+  role_definition_name = "AcrPull"
+  scope                = var.acr_id
+}
+
+resource "azurerm_role_assignment" "uami_acr_pull" {
+  scope                = var.acr_id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_user_assigned_identity.aks_identity.principal_id
+}
+
 resource "azurerm_role_assignment" "uami_kv_secret_user" {
   scope                = var.key_vault_id
   role_definition_name = "Key Vault Secrets User"
@@ -40,47 +55,62 @@ resource "azurerm_role_assignment" "uami_kv_reader" {
   role_definition_name = "Reader"
   principal_id         = azurerm_user_assigned_identity.aks_identity.principal_id
 }
-resource "azurerm_role_assignment" "uami_acr_pull" {
-  scope                = var.acr_id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_user_assigned_identity.aks_identity.principal_id
-}
 
-# --- Права на ACR
-resource "azurerm_role_assignment" "aks_acr_pull" {
-  scope                = var.acr_id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_kubernetes_cluster.cluster.identity[0].principal_id # <-- БЕЗ [0]
-}
 
-# --- Права на читання KeyVault
-resource "azurerm_role_assignment" "aks_kv_secret_user" {
-  scope                = var.key_vault_id
-  role_definition_name = "Key Vault Secrets User"
-  principal_id         = azurerm_kubernetes_cluster.cluster.kubelet_identity[0].object_id # <-- БЕЗ [0]
-}
-
-resource "azurerm_role_assignment" "aks_kv_secret_reader" {
-  scope                = var.key_vault_id
-  role_definition_name = "Reader"
-  principal_id         = azurerm_kubernetes_cluster.cluster.kubelet_identity[0].object_id
-}
-
-# --- Access Policy у KeyVault
 resource "azurerm_key_vault_access_policy" "kv_access" {
   key_vault_id = var.key_vault_id
 
-  tenant_id = azurerm_kubernetes_cluster.cluster.identity[0].tenant_id
-  object_id = azurerm_kubernetes_cluster.cluster.identity[0].principal_id
+  tenant_id = azurerm_user_assigned_identity.aks_identity.tenant_id
+  object_id = azurerm_user_assigned_identity.aks_identity.principal_id
 
   secret_permissions = [
-    "Get", "List"
+    "Get", "List", "Set", "Delete", "Backup", "Purge", "Recover", "Restore"
   ]
-
-  depends_on = [azurerm_kubernetes_cluster.cluster]
 }
+
 resource "azurerm_user_assigned_identity" "aks_identity" {
   name                = "${var.name_prefix}-aks-identity"
   location            = var.rg.location
   resource_group_name = var.rg.name
+}
+
+resource "azurerm_role_assignment" "vmss_mi_access" {
+  principal_id         = azurerm_user_assigned_identity.aks_identity.principal_id
+  role_definition_name = "AcrPull"
+  scope                = azurerm_kubernetes_cluster.cluster.node_resource_group_id
+}
+
+resource "azurerm_role_assignment" "vmss_kv_user_access" {
+  principal_id         = azurerm_user_assigned_identity.aks_identity.principal_id
+  role_definition_name = "Key Vault Secrets User"
+  scope                = azurerm_kubernetes_cluster.cluster.node_resource_group_id
+}
+
+data "azurerm_kubernetes_cluster" "aks" {
+  name                = azurerm_kubernetes_cluster.cluster.name
+  resource_group_name = azurerm_kubernetes_cluster.cluster.resource_group_name
+}
+
+data "azurerm_resource_group" "aks_node_rg" {
+  name = data.azurerm_kubernetes_cluster.aks.node_resource_group
+}
+
+resource "null_resource" "assign_uami_to_vmss" {
+  depends_on = [
+    azurerm_kubernetes_cluster.cluster,
+    azurerm_user_assigned_identity.aks_identity
+  ]
+
+  provisioner "local-exec" {
+    command = <<EOT
+      VMSS_NAME=$(az vmss list \
+        --resource-group ${azurerm_kubernetes_cluster.cluster.node_resource_group} \
+        --query "[?starts_with(name, 'aks-')].name" -o tsv)
+
+      az vmss identity assign \
+        --name $VMSS_NAME \
+        --resource-group ${azurerm_kubernetes_cluster.cluster.node_resource_group} \
+        --identities ${azurerm_user_assigned_identity.aks_identity.id}
+    EOT
+  }
 }
