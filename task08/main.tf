@@ -118,7 +118,7 @@ data "azurerm_key_vault_secret" "redis_pwd" {
 
 resource "kubectl_manifest" "secret_provider" {
   yaml_body = templatefile("${path.module}/k8s-manifests/secret-provider.yaml.tftpl", {
-    aks_kv_access_identity_id  = module.aks.kv_access_identity_id
+    aks_kv_access_identity_id  = module.aks.aks_kv_access_identity_id
     kv_name                    = local.keyvault_name
     redis_url_secret_name      = var.redis_host_secret_name
     redis_password_secret_name = var.redis_pak_secret_name

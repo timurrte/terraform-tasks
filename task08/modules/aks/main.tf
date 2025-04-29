@@ -17,7 +17,8 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.aks_identity.id]
   }
 
   key_vault_secrets_provider {
@@ -27,6 +28,22 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   tags = {
     Creator = var.common_tag
   }
+}
+resource "azurerm_role_assignment" "uami_kv_secret_user" {
+  scope                = var.key_vault_id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_user_assigned_identity.aks_identity.principal_id
+}
+
+resource "azurerm_role_assignment" "uami_kv_reader" {
+  scope                = var.key_vault_id
+  role_definition_name = "Reader"
+  principal_id         = azurerm_user_assigned_identity.aks_identity.principal_id
+}
+resource "azurerm_role_assignment" "uami_acr_pull" {
+  scope                = var.acr_id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_user_assigned_identity.aks_identity.principal_id
 }
 
 # --- Права на ACR
@@ -61,4 +78,9 @@ resource "azurerm_key_vault_access_policy" "kv_access" {
   ]
 
   depends_on = [azurerm_kubernetes_cluster.cluster]
+}
+resource "azurerm_user_assigned_identity" "aks_identity" {
+  name                = "${var.name_prefix}-aks-identity"
+  location            = var.rg.location
+  resource_group_name = var.rg.name
 }
