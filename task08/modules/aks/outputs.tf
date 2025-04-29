@@ -13,5 +13,6 @@ output "kubelet_object_id" {
   value       = azurerm_kubernetes_cluster.cluster.kubelet_identity[0].object_id
 }
 output "aks_kv_access_identity_id" {
-  value = azurerm_user_assigned_identity.aks_identity.client_id
+  description = "AKS KV access identity ID"
+  value       = azurerm_user_assigned_identity.aks_identity.client_id
 }

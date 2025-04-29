@@ -94,23 +94,3 @@ data "azurerm_kubernetes_cluster" "aks" {
 data "azurerm_resource_group" "aks_node_rg" {
   name = data.azurerm_kubernetes_cluster.aks.node_resource_group
 }
-
-resource "null_resource" "assign_uami_to_vmss" {
-  depends_on = [
-    azurerm_kubernetes_cluster.cluster,
-    azurerm_user_assigned_identity.aks_identity
-  ]
-
-  provisioner "local-exec" {
-    command = <<EOT
-      VMSS_NAME=$(az vmss list \
-        --resource-group ${azurerm_kubernetes_cluster.cluster.node_resource_group} \
-        --query "[?starts_with(name, 'aks-')].name" -o tsv)
-
-      az vmss identity assign \
-        --name $VMSS_NAME \
-        --resource-group ${azurerm_kubernetes_cluster.cluster.node_resource_group} \
-        --identities ${azurerm_user_assigned_identity.aks_identity.id}
-    EOT
-  }
-}
