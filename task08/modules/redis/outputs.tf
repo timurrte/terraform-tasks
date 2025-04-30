@@ -5,5 +5,5 @@ output "pak" {
 
 output "host" {
   description = "Redis host secret name"
-  value       = azurerm_key_vault_secret.host
+  value       = azurerm_key_vault_secret.hostname
 }
