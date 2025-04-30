@@ -128,6 +128,7 @@ resource "kubectl_manifest" "secret_provider" {
   depends_on = [module.aks]
 }
 
+
 resource "kubectl_manifest" "deployment" {
   yaml_body = templatefile("${path.module}/k8s-manifests/deployment.yaml.tftpl", {
     acr_login_server = module.acr.acr_login_server

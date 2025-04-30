@@ -4,6 +4,8 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   resource_group_name = var.rg.name
   dns_prefix          = var.name_prefix
 
+  oidc_issuer_enabled       = true
+  workload_identity_enabled = true
   default_node_pool {
     name            = var.k8s.node_pool_name
     node_count      = var.k8s.node_count
@@ -30,6 +32,16 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 
   depends_on = [azurerm_user_assigned_identity.aks_identity]
+}
+
+resource "azurerm_federated_identity_credential" "workload_identity" {
+  name                = "${var.name_prefix}-federated-identity"
+  resource_group_name = azurerm_user_assigned_identity.aks_identity.resource_group_name
+  parent_id           = azurerm_user_assigned_identity.aks_identity.id
+
+  issuer   = azurerm_kubernetes_cluster.cluster.oidc_issuer_url
+  subject  = "system:serviceaccount:${var.rg.name}"
+  audience = ["api://AzureADTokenExchange"]
 }
 
 resource "azurerm_role_assignment" "aks_acr_pull" {
