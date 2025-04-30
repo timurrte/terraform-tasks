@@ -25,7 +25,7 @@ resource "azurerm_container_group" "example" {
 
   container {
     name   = "app"
-    image  = "${var.acr_login_server}/${var.image_name}:${var.image_tag}"
+    image  = "${var.acr.login_server}/${var.image_name}:${var.image_tag}"
     cpu    = 1
     memory = 1.0
 
