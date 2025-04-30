@@ -102,19 +102,24 @@ module "aci" {
   depends_on = [data.azurerm_key_vault_secret.redis_pwd]
 }
 
+resource "time_sleep" "wait_for_redis" {
+  depends_on = [module.redis]
+
+  create_duration = "2m"
+}
 
 data "azurerm_key_vault_secret" "redis_host" {
   name         = var.redis_host_secret_name
   key_vault_id = module.kv.id
 
-  depends_on = [module.redis, module.redis.pak, module.redis.host]
+  depends_on = [module.redis, module.redis.pak, module.redis.host, time_sleep.wait_for_redis]
 }
 
 data "azurerm_key_vault_secret" "redis_pwd" {
   name         = var.redis_pak_secret_name
   key_vault_id = module.kv.id
 
-  depends_on = [module.redis, module.redis.pak, module.redis.host]
+  depends_on = [module.redis, module.redis.pak, module.redis.host, time_sleep.wait_for_redis]
 }
 
 resource "kubectl_manifest" "secret_provider" {

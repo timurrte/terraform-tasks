@@ -1,5 +1,6 @@
-tenant_id   = "b41b72d0-4e9f-4c26-8a69-f949f367c91d"
-object_id   = "835da4ff-78ad-46f6-8bf0-313f7c80242c"
+tenant_id = "b41b72d0-4e9f-4c26-8a69-f949f367c91d"
+#object_id   = "835da4ff-78ad-46f6-8bf0-313f7c80242c"
+object_id   = "ec44bbc1-76dd-4a80-ad50-697247431912"
 rg_location = "westus"
 name_prefix = "cmtr-a36a106e-mod8"
 redis = {
