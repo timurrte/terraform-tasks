@@ -145,7 +145,7 @@ resource "kubectl_manifest" "deployment" {
   }
 
 
-  depends_on = [module.aks]
+  depends_on = [kubectl_manifest.secret_provider]
 }
 
 resource "kubectl_manifest" "service" {
@@ -160,7 +160,7 @@ resource "kubectl_manifest" "service" {
     }
   }
 
-  depends_on = [module.aks]
+  depends_on = [kubectl_manifest.deployment]
 }
 
 data "kubernetes_service" "app" {
