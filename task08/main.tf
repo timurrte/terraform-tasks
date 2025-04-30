@@ -102,6 +102,7 @@ module "aci" {
   depends_on = [data.azurerm_key_vault_secret.redis_pwd]
 }
 
+
 data "azurerm_key_vault_secret" "redis_host" {
   name         = var.redis_host_secret_name
   key_vault_id = module.kv.id
