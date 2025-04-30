@@ -78,39 +78,6 @@ resource "azurerm_key_vault_access_policy" "kv_access" {
   ]
 }
 
-resource "azurerm_user_assigned_identity" "aks_identity" {
-  name                = "${var.name_prefix}-aks-identity"
-  location            = var.rg.location
-  resource_group_name = var.rg.name
-}
-
-resource "azurerm_role_assignment" "vmss_mi_access" {
-  principal_id         = azurerm_user_assigned_identity.aks_control_plane.principal_id
-  role_definition_name = "AcrPull"
-  scope                = azurerm_kubernetes_cluster.cluster.node_resource_group_id
-
-  depends_on = [
-    azurerm_user_assigned_identity.aks_identity,
-    azurerm_kubernetes_cluster.cluster
-  ]
-}
-resource "azurerm_role_assignment" "kubelet_operator_role" {
-  principal_id         = azurerm_user_assigned_identity.aks_kubelet.principal_id
-  role_definition_name = "Managed Identity Operator"
-  scope                = azurerm_user_assigned_identity.aks_kubelet.id
-}
-
-resource "azurerm_role_assignment" "vmss_kv_user_access" {
-  principal_id         = azurerm_user_assigned_identity.aks_control_plane.principal_id
-  role_definition_name = "Key Vault Secrets User"
-  scope                = azurerm_kubernetes_cluster.cluster.node_resource_group_id
-
-  depends_on = [
-    azurerm_user_assigned_identity.aks_identity,
-    azurerm_kubernetes_cluster.cluster
-  ]
-}
-
 resource "azurerm_role_assignment" "control_plane_to_kubelet_operator" {
   principal_id         = azurerm_user_assigned_identity.aks_control_plane.principal_id
   role_definition_name = "Managed Identity Operator"
