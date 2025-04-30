@@ -19,6 +19,6 @@ k8s = {
 image_name             = "cmtr-a36a106e-mod8-app"
 common_tag             = "tymur_nikolaiev@epam.com"
 aci_sku                = "Standard"
-acr_sku                = "Standard"
+acr_sku                = "Basic"
 redis_host_secret_name = "redis-hostname"
 redis_pak_secret_name  = "redis-primary-key"
