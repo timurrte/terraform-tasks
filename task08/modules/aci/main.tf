@@ -41,10 +41,15 @@ resource "azurerm_container_group" "example" {
     }
 
     ports {
-      port     = 80
+      port     = 8080
+      protocol = "TCP"
+    }
+    ports {
+      port     = 443
       protocol = "TCP"
     }
   }
+
   tags = {
     Creator = var.common_tag
   }
