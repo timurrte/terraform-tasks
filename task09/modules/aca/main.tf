@@ -22,25 +22,11 @@ resource "azurerm_container_app_environment" "example" {
 data "azurerm_client_config" "current" {
 }
 
-resource "azurerm_key_vault_access_policy" "example" {
-  key_vault_id = var.kv_id
-
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = azurerm_user_assigned_identity.example.principal_id
-
-  key_permissions = [
-    "Get", "List"
-  ]
-  secret_permissions = [
-    "Get", "List"
-  ]
-}
-
 resource "azurerm_key_vault_access_policy" "cli" {
   key_vault_id = var.kv_id
 
   tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = var.object_id
+  object_id = azurerm_container_app.example.id
 
   key_permissions = [
     "Get", "List"
@@ -50,22 +36,24 @@ resource "azurerm_key_vault_access_policy" "cli" {
   ]
 }
 
+resource "azurerm_role_assignment" "aca_acr_pull" {
+  principal_id         = azurerm_user_assigned_identity.example.principal_id
+  role_definition_name = "AcrPull"
+  scope                = var.acr_id
+}
+
 resource "null_resource" "wait_for_kv_policy" {
-  depends_on = [azurerm_key_vault_access_policy.cli, azurerm_key_vault_access_policy.example]
+  depends_on = [azurerm_role_assignment.aca_acr_pull]
 }
 
 data "azurerm_key_vault_secret" "redis-key" {
   name         = var.redis_password_name
   key_vault_id = var.kv_id
-
-  depends_on = [null_resource.wait_for_kv_policy]
 }
 
 data "azurerm_key_vault_secret" "redis-url" {
   name         = var.redis_hostname_name
   key_vault_id = var.kv_id
-
-  depends_on = [null_resource.wait_for_kv_policy]
 }
 
 resource "azurerm_container_app" "example" {
@@ -73,7 +61,7 @@ resource "azurerm_container_app" "example" {
   container_app_environment_id = azurerm_container_app_environment.example.id
   resource_group_name          = var.rg.name
   revision_mode                = "Single"
-  workload_profile_name        = azurerm_container_app_environment.example.name
+  workload_profile_name        = "workload"
 
   identity {
     type         = "UserAssigned"
@@ -122,5 +110,5 @@ resource "azurerm_container_app" "example" {
     Creator = var.common_tag
   }
 
-  depends_on = [azurerm_key_vault_access_policy.example, data.azurerm_key_vault_secret.redis-key, data.azurerm_key_vault_secret.redis-url]
+  depends_on = [null_resource.wait_for_kv_policy, data.azurerm_key_vault_secret.redis-key, data.azurerm_key_vault_secret.redis-url]
 }

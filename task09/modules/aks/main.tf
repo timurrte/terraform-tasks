@@ -37,6 +37,9 @@ resource "azurerm_kubernetes_cluster" "example" {
   tags = {
     Creator = var.common_tag
   }
+  depends_on = [
+    azurerm_role_assignment.uami_can_assign_kubelet
+  ]
 }
 
 resource "azurerm_role_assignment" "uami_can_assign_kubelet" {
@@ -69,5 +72,8 @@ resource "azurerm_key_vault_access_policy" "kv_access" {
   object_id = azurerm_user_assigned_identity.uami.principal_id
   secret_permissions = [
     "Get", "List", "Set", "Delete", "Backup", "Purge", "Recover", "Restore"
+  ]
+  key_permissions = [
+    "Get", "List"
   ]
 }

@@ -68,6 +68,9 @@ module "aca" {
   aca_name              = local.aca_name
   workload_profile_type = var.workload_profile_type
   common_tag            = var.common_tag
+
+  acr_id     = module.acr.id
+  depends_on = [module.aci_redis, module.acr]
 }
 
 module "aks" {

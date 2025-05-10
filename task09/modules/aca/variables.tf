@@ -46,6 +46,11 @@ variable "object_id" {
   type        = string
 }
 
+variable "acr_id" {
+  description = "ACR ID"
+  type        = string
+}
+
 variable "acr_login_server" {
   description = "ACR login server hostname"
   type        = string
