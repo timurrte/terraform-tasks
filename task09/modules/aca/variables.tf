@@ -41,6 +41,11 @@ variable "uami_principal" {
   type        = string
 }
 
+variable "object_id" {
+  description = "Object ID"
+  type        = string
+}
+
 variable "acr_login_server" {
   description = "ACR login server hostname"
   type        = string

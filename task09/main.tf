@@ -63,6 +63,7 @@ module "aca" {
   redis_hostname_name   = var.redis_hostname_name
   image_name            = var.image_name
   kv_id                 = module.kv.id
+  object_id             = var.object_id
   acr_login_server      = module.acr.login_server
   aca_name              = local.aca_name
   workload_profile_type = var.workload_profile_type

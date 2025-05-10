@@ -36,8 +36,22 @@ resource "azurerm_key_vault_access_policy" "example" {
   ]
 }
 
+resource "azurerm_key_vault_access_policy" "cli" {
+  key_vault_id = var.kv_id
+
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  object_id = var.object_id
+
+  key_permissions = [
+    "Get", "List"
+  ]
+  secret_permissions = [
+    "Get", "List"
+  ]
+}
+
 resource "null_resource" "wait_for_kv_policy" {
-  depends_on = [azurerm_key_vault_access_policy.example]
+  depends_on = [azurerm_key_vault_access_policy.cli, azurerm_key_vault_access_policy.example]
 }
 
 data "azurerm_key_vault_secret" "redis-key" {
@@ -63,7 +77,7 @@ resource "azurerm_container_app" "example" {
 
   identity {
     type         = "UserAssigned"
-    identity_ids = azurerm_user_assigned_identity.example.id
+    identity_ids = [azurerm_user_assigned_identity.example.id]
   }
 
   secret {
