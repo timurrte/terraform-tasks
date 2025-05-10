@@ -1,0 +1,113 @@
+resource "azurerm_resource_group" "rg" {
+  name     = local.rg_name
+  location = var.rg_location
+
+  tags = {
+    Creator = var.common_tag
+  }
+}
+
+module "kv" {
+  source  = "./modules/keyvault"
+  kv_name = local.keyvault_name
+  rg = {
+    name     = azurerm_resource_group.rg.name
+    location = azurerm_resource_group.rg.location
+  }
+  kv_sku     = var.kv_sku
+  common_tag = var.common_tag
+
+}
+
+module "aci_redis" {
+  source = "./modules/aci_redis"
+  rg = {
+    name     = azurerm_resource_group.rg.name
+    location = azurerm_resource_group.rg.location
+  }
+  redis_password_secret_name = var.redis_password_name
+  redis_host_secret_name     = var.redis_hostname_name
+  redis_aci_name             = local.redis_aci_name
+  kv_id                      = module.kv.id
+  sku_type                   = var.aci_redis_sku
+  common_tag                 = var.common_tag
+  depends_on                 = [module.kv.kv_policy]
+}
+
+module "acr" {
+  source     = "./modules/acr"
+  acr_name   = local.acr_name
+  image_name = var.image_name
+  rg = {
+    name     = azurerm_resource_group.rg.name
+    location = azurerm_resource_group.rg.location
+  }
+  acr_sku    = var.acr_sku
+  git_pat    = var.git_pat
+  common_tag = var.common_tag
+
+  depends_on = [module.kv.kv_policy]
+}
+
+module "aca" {
+  source = "./modules/aca"
+
+  rg = {
+    name     = azurerm_resource_group.rg.name
+    location = azurerm_resource_group.rg.location
+  }
+  uami_id               = module.aks.uami_id
+  uami_principal        = module.aks.uami_principal
+  app_env_name          = local.aca_env_name
+  redis_password_name   = var.redis_password_name
+  redis_hostname_name   = var.redis_hostname_name
+  image_name            = var.image_name
+  kv_id                 = module.kv.id
+  acr_login_server      = module.acr.login_server
+  aca_name              = local.aca_name
+  workload_profile_type = var.workload_profile_type
+  common_tag            = var.common_tag
+}
+
+module "aks" {
+  source = "./modules/aks"
+
+  cluster_name = local.aks_name
+  node_pool = {
+    count     = var.k8s.node_count
+    disk_type = var.k8s.node_os_disk_type
+    name      = var.k8s.node_pool_name
+    size      = var.k8s.node_size
+  }
+  kv_id  = module.kv.id
+  acr_id = module.acr.id
+  sp = {
+    client_id     = var.sp.client_id
+    client_secret = var.sp.client_secret
+  }
+  name_prefix = var.name_prefix
+  rg = {
+    name     = azurerm_resource_group.rg.name
+    location = azurerm_resource_group.rg.location
+  }
+  common_tag = var.common_tag
+
+  depends_on = [module.kv.kv_policy]
+}
+
+module "storage" {
+  source = "./modules/storage"
+
+  app_dir = "application"
+
+  storage_account_name = local.sa_name
+  rg = {
+    name     = azurerm_resource_group.rg.name
+    location = azurerm_resource_group.rg.location
+  }
+
+  sa_replication_type      = var.sa_replication_type
+  sa_container_name        = var.sa_container_name
+  sa_container_access_type = var.sa_container_access_type
+  common_tag               = var.common_tag
+}
