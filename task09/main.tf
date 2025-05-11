@@ -42,6 +42,7 @@ module "acr" {
     name     = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
   }
+  access_token            = module.storage.sas_token
   acr_sku                 = var.acr_sku
   common_tag              = var.common_tag
   app_archive_context_url = module.storage.context_url
@@ -74,7 +75,9 @@ module "aca" {
 
 module "aks" {
   source = "./modules/aks"
-
+  providers = {
+    kubernetes = kubernetes.aks
+  }
   cluster_name = local.aks_name
   node_pool = {
     count     = var.k8s.node_count
@@ -113,4 +116,21 @@ module "storage" {
   sa_container_name        = var.sa_container_name
   sa_container_access_type = var.sa_container_access_type
   common_tag               = var.common_tag
+}
+
+module "k8s" {
+  source = "./modules/k8s/"
+  providers = {
+    kubectl    = kubectl.k8s
+    kubernetes = kubernetes.aks
+  }
+  aks_kv_access_identity_id = module.aks.uami_id
+  redis_pak_secret_name     = var.redis_password_name
+  redis_host_secret_name    = var.redis_hostname_name
+  keyvault_name             = local.keyvault_name
+  acr_login_server          = module.acr.login_server
+  app_image_name            = var.image_name
+  kv_id                     = module.kv.id
+
+  depends_on = [module.aks]
 }

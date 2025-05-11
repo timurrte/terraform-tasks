@@ -15,9 +15,10 @@ resource "azurerm_container_registry_task" "acr_task" {
     os = "Linux"
   }
   docker_step {
-    dockerfile_path = "Dockerfile"
-    context_path    = var.app_archive_context_url
-    image_names     = [var.image_name]
+    dockerfile_path      = "Dockerfile"
+    context_path         = var.app_archive_context_url
+    context_access_token = var.access_token
+    image_names          = [var.image_name]
   }
 }
 

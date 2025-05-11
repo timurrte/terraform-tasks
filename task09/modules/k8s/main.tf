@@ -1,10 +1,14 @@
+data "azurerm_client_config" "this" {
+
+}
+
 resource "kubectl_manifest" "secret_provider" {
-  yaml_body = templatefile("${path.module}/k8s-manifests/secret-provider.yaml.tftpl", {
+  yaml_body = templatefile("${path.root}/k8s-manifests/secret-provider.yaml.tftpl", {
     aks_kv_access_identity_id  = var.aks_kv_access_identity_id
     kv_name                    = var.keyvault_name
     redis_url_secret_name      = var.redis_host_secret_name
     redis_password_secret_name = var.redis_pak_secret_name
-    tenant_id                  = var.tenant_id
+    tenant_id                  = data.azurerm_client_config.this.tenant_id
   })
 
 }
@@ -18,9 +22,16 @@ data "azurerm_key_vault_secret" "redis_pwd" {
   name         = var.redis_pak_secret_name
   key_vault_id = var.kv_id
 }
-
+terraform {
+  required_providers {
+    kubectl = {
+      source  = "alekc/kubectl"
+      version = "2.1.3"
+    }
+  }
+}
 resource "kubectl_manifest" "deployment" {
-  yaml_body = templatefile("${path.module}/k8s-manifests/deployment.yaml.tftpl", {
+  yaml_body = templatefile("${path.root}/k8s-manifests/deployment.yaml.tftpl", {
     acr_login_server = var.acr_login_server
     app_image_name   = var.app_image_name
     image_tag        = "latest"
@@ -39,7 +50,8 @@ resource "kubectl_manifest" "deployment" {
 }
 
 resource "kubectl_manifest" "service" {
-  yaml_body = file("${path.module}/k8s-manifests/service.yaml")
+
+  yaml_body = file("${path.root}/k8s-manifests/service.yaml")
 
   ## Block for service manifest
   wait_for {

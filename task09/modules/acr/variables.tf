@@ -30,3 +30,8 @@ variable "app_archive_context_url" {
   description = "App archive context URL"
   type        = string
 }
+
+variable "access_token" {
+  description = "SA SAS token"
+  type        = string
+}

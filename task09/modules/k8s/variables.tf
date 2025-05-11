@@ -16,10 +16,7 @@ variable "redis_pak_secret_name" {
   description = "Redis PAT secret name"
   type        = string
 }
-variable "tenant_id" {
-  description = "Tenant ID"
-  type        = string
-}
+
 variable "kv_id" {
   description = "KeyVault ID"
   type        = string
