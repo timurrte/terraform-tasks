@@ -1,13 +1,4 @@
-output "acr_url" {
-  description = "Debugging ACR URL"
-  value       = var.acr_login_server
-}
-output "acr_id" {
-  description = "Debugging ACR ID"
-  value       = var.acr_id
-}
-
-output "image" {
-  description = "Image name"
-  value       = var.image_name
+output "aca_fqdn" {
+  value       = azurerm_container_app.example.ingress[0].fqdn
+  description = "FQDN of App in Azure Container App"
 }

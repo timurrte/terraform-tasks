@@ -42,11 +42,11 @@ module "acr" {
     name     = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
   }
-  acr_sku    = var.acr_sku
-  git_pat    = var.git_pat
-  common_tag = var.common_tag
-
-  depends_on = [module.kv.kv_policy]
+  access_token            = module.storage.sas_token
+  acr_sku                 = var.acr_sku
+  common_tag              = var.common_tag
+  app_archive_context_url = module.storage.context_url
+  depends_on              = [module.kv.kv_policy, module.storage]
 }
 
 module "aca" {
@@ -70,7 +70,7 @@ module "aca" {
   common_tag            = var.common_tag
 
   acr_id     = module.acr.id
-  depends_on = [module.aci_redis, module.acr]
+  depends_on = [module.aci_redis, module.acr, module.aks]
 }
 
 module "aks" {
@@ -114,4 +114,26 @@ module "storage" {
   sa_container_name        = var.sa_container_name
   sa_container_access_type = var.sa_container_access_type
   common_tag               = var.common_tag
+}
+
+resource "time_sleep" "wait_for_aks" {
+  depends_on      = [module.aks]
+  create_duration = "3m"
+}
+
+module "k8s" {
+  source = "./modules/k8s/"
+  providers = {
+    kubectl    = kubectl.k8s
+    kubernetes = kubernetes.aks
+  }
+  aks_kv_access_identity_id = module.aks.kubelet_identity_id
+  redis_pak_secret_name     = var.redis_password_name
+  redis_host_secret_name    = var.redis_hostname_name
+  keyvault_name             = local.keyvault_name
+  acr_login_server          = module.acr.login_server
+  app_image_name            = var.image_name
+  kv_id                     = module.kv.id
+
+  aks_config = module.aks.config
 }

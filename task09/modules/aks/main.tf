@@ -23,10 +23,15 @@ resource "azurerm_kubernetes_cluster" "example" {
     os_disk_size_gb = 50
   }
 
+  key_vault_secrets_provider {
+    secret_rotation_enabled = true
+  }
+
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.uami.id]
   }
+  role_based_access_control_enabled = true
 
   kubelet_identity {
     client_id                 = azurerm_user_assigned_identity.kubelet.client_id
@@ -38,7 +43,10 @@ resource "azurerm_kubernetes_cluster" "example" {
     Creator = var.common_tag
   }
   depends_on = [
-    azurerm_role_assignment.uami_can_assign_kubelet
+    azurerm_role_assignment.uami_can_assign_kubelet,
+    azurerm_role_assignment.kubelet_kv_secret_user,
+    azurerm_role_assignment.uami_kv_reader,
+    azurerm_role_assignment.uami_kv_secret_user
   ]
 }
 
@@ -53,11 +61,20 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
   role_definition_name = "AcrPull"
   scope                = var.acr_id
 }
+resource "azurerm_role_assignment" "kubelet_kv_secret_user" {
+  scope                = var.kv_id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_user_assigned_identity.kubelet.principal_id
+}
 
 resource "azurerm_role_assignment" "uami_kv_secret_user" {
   scope                = var.kv_id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_user_assigned_identity.uami.principal_id
+}
+
+data "azurerm_client_config" "sp" {
+
 }
 
 resource "azurerm_role_assignment" "uami_kv_reader" {
@@ -70,6 +87,18 @@ resource "azurerm_key_vault_access_policy" "kv_access" {
 
   tenant_id = azurerm_user_assigned_identity.uami.tenant_id
   object_id = azurerm_user_assigned_identity.uami.principal_id
+  secret_permissions = [
+    "Get", "List", "Set", "Delete", "Backup", "Purge", "Recover", "Restore"
+  ]
+  key_permissions = [
+    "Get", "List"
+  ]
+}
+resource "azurerm_key_vault_access_policy" "kubelet_kv_access" {
+  key_vault_id = var.kv_id
+
+  tenant_id = azurerm_user_assigned_identity.kubelet.tenant_id
+  object_id = azurerm_user_assigned_identity.kubelet.principal_id
   secret_permissions = [
     "Get", "List", "Set", "Delete", "Backup", "Purge", "Recover", "Restore"
   ]

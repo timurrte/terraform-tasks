@@ -1,4 +1,4 @@
-resource "azurerm_user_assigned_identity" "example" {
+resource "azurerm_user_assigned_identity" "app" {
   location            = var.rg.location
   name                = "app_identity"
   resource_group_name = var.rg.name
@@ -26,7 +26,7 @@ resource "azurerm_key_vault_access_policy" "cli" {
   key_vault_id = var.kv_id
 
   tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = azurerm_container_app.example.id
+  object_id = azurerm_user_assigned_identity.app.principal_id
 
   key_permissions = [
     "Get", "List"
@@ -37,7 +37,7 @@ resource "azurerm_key_vault_access_policy" "cli" {
 }
 
 resource "azurerm_role_assignment" "aca_acr_pull" {
-  principal_id         = azurerm_user_assigned_identity.example.principal_id
+  principal_id         = azurerm_user_assigned_identity.app.principal_id
   role_definition_name = "AcrPull"
   scope                = var.acr_id
 }
@@ -55,7 +55,6 @@ data "azurerm_key_vault_secret" "redis-url" {
   name         = var.redis_hostname_name
   key_vault_id = var.kv_id
 }
-
 resource "azurerm_container_app" "example" {
   name                         = var.aca_name
   container_app_environment_id = azurerm_container_app_environment.example.id
@@ -65,7 +64,7 @@ resource "azurerm_container_app" "example" {
 
   identity {
     type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.example.id]
+    identity_ids = [azurerm_user_assigned_identity.app.id]
   }
 
   secret {
@@ -77,7 +76,19 @@ resource "azurerm_container_app" "example" {
     value = data.azurerm_key_vault_secret.redis-key.value
   }
 
+  registry {
+    server   = var.acr_login_server
+    identity = azurerm_user_assigned_identity.app.id
+  }
 
+  ingress {
+    external_enabled = true
+    target_port      = 8080
+    traffic_weight {
+      percentage      = 100
+      latest_revision = true
+    }
+  }
   template {
     container {
       name   = "containerapp"

@@ -16,10 +16,7 @@ variable "redis_pak_secret_name" {
   description = "Redis PAT secret name"
   type        = string
 }
-variable "tenant_id" {
-  description = "Tenant ID"
-  type        = string
-}
+
 variable "kv_id" {
   description = "KeyVault ID"
   type        = string
@@ -31,4 +28,13 @@ variable "acr_login_server" {
 variable "app_image_name" {
   description = "App image name"
   type        = string
+}
+variable "aks_config" {
+  description = "Kubectl provider config"
+  type = object({
+    host                   = string
+    client_certificate     = string
+    client_key             = string
+    cluster_ca_certificate = string
+  })
 }

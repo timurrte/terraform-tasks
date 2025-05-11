@@ -9,9 +9,9 @@ resource "time_offset" "sas_expiry" {
 
 # Data source to archive the application directory
 data "archive_file" "app" {
-  type        = "zip"
+  type        = "tar.gz"
   source_dir  = var.app_dir
-  output_path = "${path.module}/app.zip"
+  output_path = "${path.module}/app.tar.gz"
 }
 
 # Azure Storage Account
@@ -35,7 +35,7 @@ resource "azurerm_storage_container" "this" {
 
 # Blob within the Storage Container (upload the zip archive)
 resource "azurerm_storage_blob" "app_archive" {
-  name                   = "app.zip"
+  name                   = "app.tar.gz"
   type                   = "Block"
   source                 = data.archive_file.app.output_path
   storage_account_name   = azurerm_storage_account.this.name
@@ -53,7 +53,7 @@ data "azurerm_storage_account_sas" "sas" {
   resource_types {
     service   = true
     container = true
-    object    = false
+    object    = true
   }
 
   services {
