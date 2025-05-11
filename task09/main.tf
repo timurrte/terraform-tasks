@@ -74,10 +74,7 @@ module "aca" {
 }
 
 module "aks" {
-  source = "./modules/aks"
-  providers = {
-    kubernetes = kubernetes.aks
-  }
+  source       = "./modules/aks"
   cluster_name = local.aks_name
   node_pool = {
     count     = var.k8s.node_count
@@ -121,10 +118,9 @@ module "storage" {
 module "k8s" {
   source = "./modules/k8s/"
   providers = {
-    kubectl    = kubectl.k8s
-    kubernetes = kubernetes.aks
+    kubectl = kubectl.k8s
   }
-  aks_kv_access_identity_id = module.aks.uami_id
+  aks_kv_access_identity_id = module.aks.kubelet_identity_id
   redis_pak_secret_name     = var.redis_password_name
   redis_host_secret_name    = var.redis_hostname_name
   keyvault_name             = local.keyvault_name

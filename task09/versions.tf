@@ -34,16 +34,6 @@ provider "kubectl" {
   load_config_file       = false
 }
 
-provider "kubernetes" {
-  alias                  = "aks"
-  host                   = module.aks.config.host
-  client_certificate     = base64decode(module.aks.config.client_certificate)
-  client_key             = base64decode(module.aks.config.client_key)
-  cluster_ca_certificate = base64decode(module.aks.config.cluster_ca_certificate)
-}
-
-
-
 provider "azurerm" {
   features {}
 }

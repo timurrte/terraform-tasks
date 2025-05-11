@@ -67,6 +67,6 @@ resource "kubectl_manifest" "service" {
 
 data "kubernetes_service" "example" {
   metadata {
-    name = "service"
+    name = "redis-flask-app-service"
   }
 }
