@@ -16,11 +16,6 @@ variable "acr_sku" {
   type        = string
 }
 
-variable "git_pat" {
-  description = "GIT PAT"
-  type        = string
-}
-
 variable "image_name" {
   description = "Container image name"
   type        = string
@@ -28,5 +23,10 @@ variable "image_name" {
 
 variable "common_tag" {
   description = "Common tag"
+  type        = string
+}
+
+variable "app_archive_context_url" {
+  description = "App archive context URL"
   type        = string
 }

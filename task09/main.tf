@@ -42,11 +42,10 @@ module "acr" {
     name     = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
   }
-  acr_sku    = var.acr_sku
-  git_pat    = var.git_pat
-  common_tag = var.common_tag
-
-  depends_on = [module.kv.kv_policy]
+  acr_sku                 = var.acr_sku
+  common_tag              = var.common_tag
+  app_archive_context_url = module.storage.context_url
+  depends_on              = [module.kv.kv_policy, module.storage]
 }
 
 module "aca" {
@@ -70,7 +69,7 @@ module "aca" {
   common_tag            = var.common_tag
 
   acr_id     = module.acr.id
-  depends_on = [module.aci_redis, module.acr]
+  depends_on = [module.aci_redis, module.acr, module.aks]
 }
 
 module "aks" {
