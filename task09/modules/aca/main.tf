@@ -81,6 +81,14 @@ resource "azurerm_container_app" "example" {
     identity = azurerm_user_assigned_identity.app.id
   }
 
+  ingress {
+    external_enabled = true
+    target_port      = 8080
+    traffic_weight {
+      percentage      = 100
+      latest_revision = true
+    }
+  }
   template {
     container {
       name   = "containerapp"

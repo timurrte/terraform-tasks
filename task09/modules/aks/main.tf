@@ -31,6 +31,7 @@ resource "azurerm_kubernetes_cluster" "example" {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.uami.id]
   }
+  role_based_access_control_enabled = true
 
   kubelet_identity {
     client_id                 = azurerm_user_assigned_identity.kubelet.client_id

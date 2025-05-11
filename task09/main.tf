@@ -74,7 +74,8 @@ module "aca" {
 }
 
 module "aks" {
-  source       = "./modules/aks"
+  source = "./modules/aks"
+
   cluster_name = local.aks_name
   node_pool = {
     count     = var.k8s.node_count
@@ -115,10 +116,16 @@ module "storage" {
   common_tag               = var.common_tag
 }
 
+resource "time_sleep" "wait_for_aks" {
+  depends_on      = [module.aks]
+  create_duration = "3m"
+}
+
 module "k8s" {
   source = "./modules/k8s/"
   providers = {
-    kubectl = kubectl.k8s
+    kubectl    = kubectl.k8s
+    kubernetes = kubernetes.aks
   }
   aks_kv_access_identity_id = module.aks.kubelet_identity_id
   redis_pak_secret_name     = var.redis_password_name
@@ -128,5 +135,5 @@ module "k8s" {
   app_image_name            = var.image_name
   kv_id                     = module.kv.id
 
-  depends_on = [module.aks]
+  aks_config = module.aks.config
 }

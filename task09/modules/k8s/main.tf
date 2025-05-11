@@ -22,14 +22,7 @@ data "azurerm_key_vault_secret" "redis_pwd" {
   name         = var.redis_pak_secret_name
   key_vault_id = var.kv_id
 }
-terraform {
-  required_providers {
-    kubectl = {
-      source  = "alekc/kubectl"
-      version = "2.1.3"
-    }
-  }
-}
+
 resource "kubectl_manifest" "deployment" {
   yaml_body = templatefile("${path.root}/k8s-manifests/deployment.yaml.tftpl", {
     acr_login_server = var.acr_login_server
@@ -50,7 +43,6 @@ resource "kubectl_manifest" "deployment" {
 }
 
 resource "kubectl_manifest" "service" {
-
   yaml_body = file("${path.root}/k8s-manifests/service.yaml")
 
   ## Block for service manifest
@@ -67,6 +59,9 @@ resource "kubectl_manifest" "service" {
 
 data "kubernetes_service" "example" {
   metadata {
-    name = "redis-flask-app-service"
+    name      = "redis-flask-app-service"
+    namespace = "default"
   }
+
+  depends_on = [kubectl_manifest.service]
 }
