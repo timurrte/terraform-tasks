@@ -93,3 +93,15 @@ resource "azurerm_key_vault_access_policy" "kv_access" {
     "Get", "List"
   ]
 }
+resource "azurerm_key_vault_access_policy" "kubelet_kv_access" {
+  key_vault_id = var.kv_id
+
+  tenant_id = azurerm_user_assigned_identity.kubelet.tenant_id
+  object_id = azurerm_user_assigned_identity.kubelet.principal_id
+  secret_permissions = [
+    "Get", "List", "Set", "Delete", "Backup", "Purge", "Recover", "Restore"
+  ]
+  key_permissions = [
+    "Get", "List"
+  ]
+}
