@@ -8,11 +8,6 @@ variable "name_prefix" {
   type        = string
 }
 
-variable "git_pat" {
-  description = "Git Personal Access token"
-  type        = string
-}
-
 variable "workload_profile_type" {
   description = "ACA name"
   type        = string
