@@ -10,20 +10,3 @@ terraform {
     }
   }
 }
-provider "kubectl" {
-  alias                  = "k8s"
-  host                   = var.config.host
-  client_certificate     = base64decode(var.config.client_certificate)
-  client_key             = base64decode(var.config.client_key)
-  cluster_ca_certificate = base64decode(var.config.cluster_ca_certificate)
-  apply_retry_count      = 2
-  load_config_file       = false
-}
-
-provider "kubernetes" {
-  alias                  = "aks"
-  host                   = var.config.host
-  client_certificate     = base64decode(var.config.client_certificate)
-  client_key             = base64decode(var.config.client_key)
-  cluster_ca_certificate = base64decode(var.config.cluster_ca_certificate)
-}
