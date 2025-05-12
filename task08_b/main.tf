@@ -14,7 +14,7 @@ module "kv" {
     name     = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
   }
-  object     = var.object_id
+  object_id  = var.object_id
   kv_sku     = var.kv_sku
   common_tag = var.common_tag
 
