@@ -94,7 +94,7 @@ resource "azurerm_container_app" "example" {
       name   = "containerapp"
       image  = "${var.acr_login_server}/${var.image_name}:latest"
       cpu    = 1
-      memory = "1Gi"
+      memory = "2Gi"
       env {
         name  = "CREATOR"
         value = "ACA"
