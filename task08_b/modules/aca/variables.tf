@@ -41,11 +41,6 @@ variable "uami_principal" {
   type        = string
 }
 
-variable "object_id" {
-  description = "Object ID"
-  type        = string
-}
-
 variable "acr_id" {
   description = "ACR ID"
   type        = string

@@ -46,14 +46,23 @@ resource "null_resource" "wait_for_kv_policy" {
   depends_on = [azurerm_role_assignment.aca_acr_pull]
 }
 
+resource "time_sleep" "wait_2m" {
+  depends_on      = [azurerm_role_assignment.aca_acr_pull]
+  create_duration = "2m"
+}
+
 data "azurerm_key_vault_secret" "redis-key" {
   name         = var.redis_password_name
   key_vault_id = var.kv_id
+
+  depends_on = [time_sleep.wait_2m]
 }
 
 data "azurerm_key_vault_secret" "redis-url" {
   name         = var.redis_hostname_name
   key_vault_id = var.kv_id
+
+  depends_on = [time_sleep.wait_2m]
 }
 resource "azurerm_container_app" "example" {
   name                         = var.aca_name
