@@ -10,10 +10,6 @@ variable "rg" {
   })
 }
 
-variable "object_id" {
-  description = "Object ID to grant access"
-  type        = string
-}
 variable "kv_sku" {
   description = "KV SKU type"
   type        = string

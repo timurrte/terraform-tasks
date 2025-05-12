@@ -31,10 +31,6 @@ variable "tenant_id" {
   type        = string
 }
 
-variable "object_id" {
-  description = "Object ID"
-  type        = string
-}
 variable "sp" {
   description = "Service Principal ID and secret"
   type = object({

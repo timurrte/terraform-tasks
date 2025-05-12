@@ -14,7 +14,6 @@ module "kv" {
     name     = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
   }
-  object_id  = var.object_id
   kv_sku     = var.kv_sku
   common_tag = var.common_tag
 
@@ -136,4 +135,6 @@ module "k8s" {
   kv_id                     = module.kv.id
 
   aks_config = module.aks.config
+
+  depends_on = [time_sleep.wait_for_aks, module.aks]
 }
