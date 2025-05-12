@@ -1,6 +1,6 @@
 locals {
   rg_name        = join("-", [var.name_prefix, "rg"])
-  redis_aci_name = join("-", [var.name_prefix, "ci"])
+  redis_aci_name = join("-", [var.name_prefix, "redis-ci"])
   aca_name       = join("-", [var.name_prefix, "ca"])
   aca_env_name   = join("-", [var.name_prefix, "cae"])
   acr_name       = "cmtra36a106emod8bcr"
