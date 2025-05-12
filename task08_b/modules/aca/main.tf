@@ -60,7 +60,7 @@ resource "azurerm_container_app" "example" {
   container_app_environment_id = azurerm_container_app_environment.example.id
   resource_group_name          = var.rg.name
   revision_mode                = "Single"
-  workload_profile_name        = "workload"
+  workload_profile_name        = "Consumption"
 
   identity {
     type         = "UserAssigned"
