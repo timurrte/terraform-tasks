@@ -9,7 +9,7 @@ resource "azurerm_container_app_environment" "example" {
   location            = var.rg.location
   resource_group_name = var.rg.name
   workload_profile {
-    name                  = "workload"
+    name                  = "Consumption"
     workload_profile_type = var.workload_profile_type
     minimum_count         = 1
     maximum_count         = 3
