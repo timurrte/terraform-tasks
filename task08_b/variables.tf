@@ -63,15 +63,6 @@ variable "acr_sku" {
   type        = string
 }
 
-variable "redis" {
-  description = "Redis module config"
-  type = object({
-    capacity   = string
-    sku        = string
-    sku_family = string
-  })
-}
-
 variable "aci_redis_sku" {
   description = "ACI Redis SKU"
   type        = string

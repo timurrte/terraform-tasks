@@ -11,9 +11,3 @@ output "aks_lb_ip" {
   value       = module.k8s.aks_lb_ip
   description = "Load Balancer IP address of APP in AKS"
 }
-
-output "aks_config" {
-  value       = module.aks.config
-  description = "AKS config"
-  sensitive   = true
-}
