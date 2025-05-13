@@ -27,6 +27,8 @@ resource "azurerm_container_group" "example" {
     commands = [
       "redis-server",
       "--protected-mode", "no",
+      "--port", "6379",
+      "--bind", "0.0.0.0",
       "--requirepass", random_password.password.result
     ]
   }

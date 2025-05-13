@@ -93,7 +93,7 @@ resource "azurerm_container_app" "example" {
   ingress {
     allow_insecure_connections = true
     external_enabled           = true
-    target_port                = 80
+    target_port                = 8080
     traffic_weight {
       percentage      = 100
       latest_revision = true
@@ -112,7 +112,7 @@ resource "azurerm_container_app" "example" {
 
       env {
         name  = "REDIS_PORT"
-        value = "6380"
+        value = "6379"
       }
 
       env {
@@ -124,8 +124,21 @@ resource "azurerm_container_app" "example" {
         name        = "REDIS_PWD"
         secret_name = "redis-key"
       }
+      liveness_probe {
+        transport = "HTTP"
+        port      = 8080
+      }
+      readiness_probe {
+        transport = "HTTP"
+        port      = 8080
+      }
+      startup_probe {
+        transport = "HTTP"
+        port      = 8080
+      }
     }
   }
+
 
   tags = {
     Creator = var.common_tag
