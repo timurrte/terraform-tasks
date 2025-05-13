@@ -13,7 +13,7 @@ variable "name_prefix" {
   type        = string
 }
 
-variable "aks_lb_ip" {
+variable "aks_loadbalancer_ip" {
   description = "AKS LB IP"
   type        = string
 }
