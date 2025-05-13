@@ -5,5 +5,5 @@ output "afw_public_ip" {
 
 output "afw_private_ip" {
   description = "AFW private IP"
-  value       = azurerm_firewall.afw.ip_configuration.private_ip_address
+  value       = azurerm_firewall.afw.ip_configuration[0].private_ip_address
 }
