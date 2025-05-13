@@ -1,0 +1,5 @@
+location    = "eastus"
+vnet_name   = "xxx"
+name_prefix = "xxx"
+aks_lb_ip   = "1.1.1.1"
+subnet_name = "subnet"
