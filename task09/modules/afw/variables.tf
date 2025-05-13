@@ -27,3 +27,13 @@ variable "fw_address_prefix" {
   type        = string
   default     = "10.0.1.0/24"
 }
+
+variable "vnet_address_space" {
+  description = "Existing VNET address space"
+  type        = string
+}
+
+variable "subnet_address_space" {
+  description = "Existing subnet address space"
+  type        = string
+}
