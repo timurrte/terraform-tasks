@@ -37,3 +37,32 @@ variable "subnet_address_space" {
   description = "Existing subnet address space"
   type        = string
 }
+
+variable "app_rules" {
+  description = "List of App rules"
+  type = list(object({
+    name             = string
+    source_addresses = list(string)
+    protocol = object({
+      type = string
+      port = string
+    })
+    target_fqdns = list(string)
+  }))
+}
+
+variable "enable_nat_rule" {
+  description = "Enable NAT rule"
+  type        = bool
+  default     = true
+}
+variable "network_rules" {
+  description = "List of Network rules"
+  type = list(object({
+    name                  = string
+    source_addresses      = list(string)
+    destination_ports     = list(string)
+    destination_addresses = list(string)
+    protocols             = list(string)
+  }))
+}

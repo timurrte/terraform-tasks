@@ -66,14 +66,17 @@ resource "azurerm_firewall_application_rule_collection" "app_rule" {
   priority            = 100
   action              = "Allow"
 
-  rule {
-    name             = "AllowWeb"
-    source_addresses = ["10.0.0.0/24"]
-    protocol {
-      port = "80"
-      type = "Http"
+  dynamic "rule" {
+    for_each = var.app_rules
+    content {
+      name             = rule.value.name
+      source_addresses = rule.value.source_addresses
+      protocol {
+        type = rule.value.protocol.type
+        port = rule.value.protocol.port
+      }
+      target_fqdns = rule.value.target_fqdns
     }
-    target_fqdns = ["www.microsoft.com"]
   }
 }
 
@@ -84,16 +87,20 @@ resource "azurerm_firewall_network_rule_collection" "net_rule" {
   priority            = 200
   action              = "Allow"
 
-  rule {
-    name                  = "AllowDNS"
-    source_addresses      = ["10.0.0.0/24"]
-    destination_ports     = ["53"]
-    destination_addresses = ["*"]
-    protocols             = ["UDP"]
+  dynamic "rule" {
+    for_each = var.network_rules
+    content {
+      name                  = rule.value.name
+      source_addresses      = rule.value.source_addresses
+      destination_ports     = rule.value.destination_ports
+      destination_addresses = rule.value.destination_addresses
+      protocols             = rule.value.protocols
+    }
   }
 }
 
 resource "azurerm_firewall_nat_rule_collection" "nat_rule" {
+  count               = var.enable_nat_rule ? 1 : 0
   name                = local.nat_rule_name
   azure_firewall_name = azurerm_firewall.afw.name
   resource_group_name = data.azurerm_resource_group.afw.name
