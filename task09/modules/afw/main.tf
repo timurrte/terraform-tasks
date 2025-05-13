@@ -6,21 +6,27 @@ resource "azurerm_subnet" "firewall" {
   name                 = "AzureFirewallSubnet"
   resource_group_name  = data.azurerm_resource_group.afw.name
   virtual_network_name = var.vnet_name
-  address_prefixes     = var.fw_address_prefix
+  address_prefixes     = [var.fw_address_prefix]
+}
+
+data "azurerm_subnet" "aks_subnet" {
+  name                 = var.subnet_name
+  virtual_network_name = var.vnet_name
+  resource_group_name  = data.azurerm_resource_group.afw.name
 }
 
 resource "azurerm_public_ip" "public" {
   name                = local.pip_name
-  location            = azurerm_resource_group.afw.location
-  resource_group_name = azurerm_resource_group.afw.name
+  location            = data.azurerm_resource_group.afw.location
+  resource_group_name = data.azurerm_resource_group.afw.name
   allocation_method   = "Static"
   sku                 = "Standard"
 }
 
 resource "azurerm_firewall" "afw" {
   name                = local.afw_name
-  location            = azurerm_resource_group.afw.location
-  resource_group_name = azurerm_resource_group.afw.name
+  location            = data.azurerm_resource_group.afw.location
+  resource_group_name = data.azurerm_resource_group.afw.name
   sku_name            = "AZFW_VNet"
   sku_tier            = "Standard"
 
@@ -33,12 +39,12 @@ resource "azurerm_firewall" "afw" {
 
 resource "azurerm_route_table" "route" {
   name                = local.rt_name
-  location            = azurerm_resource_group.afw.location
-  resource_group_name = azurerm_resource_group.afw.name
+  location            = data.azurerm_resource_group.afw.location
+  resource_group_name = data.azurerm_resource_group.afw.name
 
   route {
     name                   = "route-through-afw"
-    address_prefix         = "0.0.0.0/0"
+    address_prefix         = var.subnet_address_space
     next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = azurerm_firewall.afw.ip_configuration[0].private_ip_address
   }
@@ -46,12 +52,6 @@ resource "azurerm_route_table" "route" {
   tags = {
     environment = "Production"
   }
-}
-
-data "azurerm_subnet" "aks_subnet" {
-  name                 = var.subnet_name
-  virtual_network_name = var.vnet_name
-  resource_group_name  = data.azurerm_resource_group.afw.name
 }
 
 resource "azurerm_subnet_route_table_association" "aks" {
@@ -103,7 +103,7 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rule" {
   rule {
     name                  = "dnat-to-aks-lb"
     source_addresses      = ["*"]
-    destination_addresses = azurerm_public_ip.firewall_pip.ip_address
+    destination_addresses = [azurerm_public_ip.public.ip_address]
     destination_ports     = ["80"]
     protocols             = ["TCP"]
 
